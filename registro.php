@@ -1,17 +1,6 @@
 <?php
 // Configura los datos de tu conexión
-$host = "localhost";
-$db = "palabrato";
-$user = "root";
-$pass = ""; // cambia esto si tenés una contraseña
-
-// Crear conexión
-$conn = new mysqli($host, $user, $pass, $db);
-
-// Verificar conexión
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
-}
+require_once "conexion.php";
 
 // Obtener datos del formulario
 $username = $_POST['username'];

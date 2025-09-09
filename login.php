@@ -1,40 +1,29 @@
 <?php
-session_start();
+session_start(); // no te olvides de iniciar la sesión
 
-// Configura tus datos de conexión
-$host = "localhost";
-$db = "palabrato";
-$user = "root";
-$pass = ""; // o tu contraseña si la tienes
+require_once "conexion.php";
 
-// Conectar a la base de datos
-$conn = new mysqli($host, $user, $pass, $db);
-
-// Verificar conexión
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
-}
 
 // Obtener datos del formulario
 $username = $_POST['username'];
 $contraseña = $_POST['contraseña'];
 
-// Evitar inyecciones SQL
-$username = $conn->real_escape_string($username);
-$contraseña = $conn->real_escape_string($contraseña);
-
-// Buscar usuario en la base de datos
-$sql = "SELECT * FROM usuarios WHERE username = '$username' LIMIT 1";
-$result = $conn->query($sql);
+// Evitar inyecciones SQL con consultas preparadas (más seguro que real_escape_string)
+$stmt = $conn->prepare("SELECT id, username, contraseña FROM usuarios WHERE username = ? LIMIT 1");
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result->num_rows === 1) {
     $usuario = $result->fetch_assoc();
 
-    // Verifica la contraseña (texto plano, no recomendado en producción)
-    if ($contraseña === $usuario['contraseña']) {
+    // Verifica la contraseña usando password_verify
+    if (password_verify($contraseña, $usuario['contraseña'])) {
+        // Si la contraseña es correcta
         $_SESSION['usuario'] = $usuario['username'];
         $_SESSION['id'] = $usuario['id'];
-        header("Location: bienvenido.php");
+
+        header("Location: index.php");
         exit;
     } else {
         echo "Contraseña incorrecta.";
@@ -43,5 +32,6 @@ if ($result->num_rows === 1) {
     echo "Usuario no encontrado.";
 }
 
+$stmt->close();
 $conn->close();
 ?>
