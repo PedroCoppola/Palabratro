@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body {
+  font-family: 'Press Start 2P', cursive;
+  background: radial-gradient(circle, #1a1a1a, #000000);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  text-align: center;
+}
+
+.titulo {
+  font-size: 40px;
+  margin-bottom: 30px;
+  color: #ffcc00;
+  text-shadow: 0 0 10px #ffcc00, 0 0 20px #ff6600;
+}
+
+/* Tarjeta estilo carta */
+.tarjeta {
+  background: #2e2e2e;
+  border: 3px solid #ffffff;
+  border-radius: 16px;
+  width: 280px;
+  margin: 0 auto 25px;
+  padding: 20px;
+  box-shadow: 0 6px 0 #000, 0 0 15px rgba(255,255,255,0.2);
+}
+
+.tarjeta h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #00ffcc;
+}
+
+.tarjeta p {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.btns {
+  margin-top: 20px;
+}
+
+.btn {
+  display: block;
+  width: 250px;
+  margin: 15px auto;
+  padding: 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.carta {
+  background: #2e2e2e;
+  border: 3px solid #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 0 #000, 0 0 10px rgba(255,255,255,0.2);
+  color: #fff;
+}
+
+.carta:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 0 #000, 0 0 20px rgba(255,255,255,0.4);
+}
+
+.btn-jugar {
+  background: linear-gradient(145deg, #00ff88, #008844);
+  border-color: #00ff88;
+}
+
+.btn-ranking {
+  background: linear-gradient(145deg, #ff4444, #880000);
+  border-color: #ff4444;
+}
+    
