@@ -4,8 +4,6 @@ let intentos = [];
 let maxIntentos = 6;
 let filaActual = 0;
 let input;
-    let totalWidth = 5 * size + 4 * spacing;
-
 
 let size = 80; // tamaño de cada cuadrado
 let spacing = 10; // espacio entre cuadrados
@@ -20,10 +18,11 @@ function setup() {
 
 
 
+  
   // Input para escribir palabra
   input = createInput();
   input.position(width / 2 - input.width / 2, height - 60);
-  input.attribute('maxlength', '20');
+  input.attribute('maxlength', '5');
   input.style('text-transform', 'uppercase');
   input.style('font-size', '32px');
   input.style('width', windowWidth / 2.1 + 'px');
