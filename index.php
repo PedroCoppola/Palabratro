@@ -6,18 +6,31 @@
   <link rel="stylesheet" href="stylo.css">
 </head>
 <body>
-  <!-- Tarjeta de usuario (arriba a la derecha) -->
-  <div class="tarjeta usuario">
-    <h2 id="usuario">Lucas</h2>
-    <p>Puntaje: <span id="puntaje">1200</span></p>
+
+<div class="layout">
+
+  <div class="hoja">
+    <div class="tarjeta usuario">
+      <h2 id="usuario">Lucas</h2>
+      <p>Puntaje: <span id="puntaje">1200</span></p>
+    </div>
+
+    <h2>Estadísticas</h2>
+    <p><strong>Mejor puntuación:</strong> 12450</p>
+    <p><strong>Número de victorias:</strong> 27</p>
+    <p><strong>Derrotas:</strong> 5</p>
+    <p><strong>Partidas jugadas:</strong> 32</p>
   </div>
 
   <div class="container">
-    <h1 class="titulo">BALATRO</h1>
+    <h1 class="titulo">PALABRATO</h1>
     <div class="btns">
       <button class="btn carta btn-jugar">🎮 Jugar</button>
       <button class="btn carta btn-ranking">🏆 Ranking</button>
     </div>
   </div>
+
+</div>
+
 </body>
 </html>
