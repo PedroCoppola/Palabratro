@@ -1,5 +1,5 @@
 <?php
-session_start(); // no te olvides de iniciar la sesión
+session_start(); 
 
 require_once "conexion.php";
 
