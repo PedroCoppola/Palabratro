@@ -1,25 +1,31 @@
+// Vector de palabras que pueden salir
 let palabras = ["CASAS", "PERRO", "MANGO", "JUEGO", "PLAZA"];
 let palabraSecreta;
 let intentos = [];
 let maxIntentos = 6;
 let filaActual = 0;
 let input;
+let backgroundImage;
+let size = 80; 
+let spacing = 10; 
 
-let size = 80; // tamaño de cada cuadrado
-let spacing = 10; // espacio entre cuadrados
+// Cargar el fondo
+  function preload() {
+      backgroundImage = loadImage('fondo.jpg');
+    }
+
 
 function setup() {
-  createCanvas((windowWidth - 5), windowHeight);
+// Crear el lienzo del tamaño de la ventana
+  createCanvas(1000, 600);
   textAlign(CENTER, CENTER);
   textSize(32);
 
+// Elegir una palabra de las posibles
   palabraSecreta = random(palabras);
 
 
-
-
-  
-  // Input para escribir palabra
+  // Input para escribir palabra con estilo
   input = createInput();
   input.position(width / 2 - input.width / 2, height - 60);
   input.attribute('maxlength', '5');
@@ -28,20 +34,22 @@ function setup() {
   input.style('width', windowWidth / 2.1 + 'px');
   input.style('text-align', 'center');
 
+  // Botón para probar palabra
   let boton = createButton("Probar");
   boton.position(width / 2 - boton.width / 2, height - 30);
   boton.mousePressed(probarPalabra);
 }
 
 function draw() {
-  background(220);
+  // Fondo con imagen
 
-  // Mostrar intentos
+
+  // Mostrar intentos en varias filas
   for (let i = 0; i < intentos.length; i++) {
     intentos[i].mostrar();
   }
 
-  // Mensajes finales
+  // Mensajes finales después de agotar intentos o ganar
   if (filaActual >= maxIntentos && !gano()) {
     text("No adivinaste nada wachin 😭", width / 2, height / 2);
   }
@@ -50,15 +58,21 @@ function draw() {
   }
 }
 
+// Función para probar la palabra ingresada
 function probarPalabra() {
+
+  // Validar si se adivinó o si se agotaron los intentos
   if (filaActual >= maxIntentos || gano()) return;
 
   let palabra = input.value().toUpperCase();
+
+  // Validar que tenga 5 letras
   if (palabra.length !== 5) {
     alert("La palabra debe tener 5 letras");
     return;
   }
 
+  // Crear una nueva fila con la palabra ingresada
   let fila = new Fila(filaActual, palabra, palabraSecreta);
   intentos.push(fila);
   filaActual++;
