@@ -15,8 +15,8 @@
   <div class="container">
     <h1 class="titulo">BALATRO</h1>
     <div class="btns">
-      <button class="btn carta btn-jugar">🎮 Jugar</button>
-      <button class="btn carta btn-ranking">🏆 Ranking</button>
+      <button class="btn carta btn-jugar" onclick="location.href='palabratro/index.html'">🎮 Jugar</button>
+      <button class="btn carta btn-ranking" onclick="location.href='ranking.php'">🏆 Ranking</button>
     </div>
   </div>
 </body>
