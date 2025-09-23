@@ -79,8 +79,8 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%) rotate(-1deg);
-  width: 450px;
-  min-height: 560px;
+  width: 410px;
+  min-height: 500px;
   padding: 36px 26px;
   background: url("../img/hoja.jpg") no-repeat center center;
   background-size: cover;
@@ -91,7 +91,7 @@ body {
   color: #000;
   z-index: 6;
   box-sizing: border-box;
-  margin-left: 250px;
+  margin-left: 40px;
 }
 
 .info {

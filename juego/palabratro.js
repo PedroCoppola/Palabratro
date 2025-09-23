@@ -31,13 +31,13 @@ function setup() {
 
   // Input para escribir palabra con estilo
 input = createInput();
-input.position(width / 2 - input.width / 2, 575);
+input.position(310, 475);
 input.attribute('maxlength', '5');
 
 // Estilo “tipo botón/cuadrado”
 input.style('text-transform', 'uppercase');
 input.style('font-size', '32px');
-input.style('width', windowWidth / 2.1 + 'px');
+input.size(765, 50);
 input.style('text-align', 'center');
 input.style('border-radius', '12px');
 input.style('border', '3px dashed #868686ff');  // borde visible
@@ -58,7 +58,7 @@ input.elt.addEventListener('focus', () => {
   // Botón para probar palabra
   boton = createButton("Probar");
 
-  boton.position(415, 660); boton.size(765, 50);
+  boton.position(310, 540); boton.size(775, 50);
 
   // estilos base
 boton.style('font-size', '20px');
