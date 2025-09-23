@@ -1,6 +1,6 @@
 
 // Vector de palabras que pueden salir
-let palabras = ["CASAS", "PERRO", "MANGO", "JUEGO", "PLAZA"];
+let palabras = [];
 let palabraSecreta;
 let intentos = [];
 let maxIntentos = 6;
@@ -17,6 +17,21 @@ let angle = 0;
       backgroundImage = loadImage('fondo.jpg');
     }
 
+    async function cargarPalabraSecreta() {
+  try {
+    const response = await fetch("get_palabras.php");
+    palabras = await response.json(); // array de strings
+    console.log("Palabras cargadas:", palabras);
+
+    // elegir una palabra random
+    const randomIndex = Math.floor(Math.random() * palabras.length);
+    palabraSecreta = palabras[randomIndex];
+    console.log("Palabra secreta:", palabraSecreta);
+  } catch (error) {
+    console.error("Error cargando palabras:", error);
+  }
+}
+
 
 function setup() {
   // Crear el lienzo del tamaño de la ventana
@@ -26,7 +41,7 @@ function setup() {
 
   textSize(32);
 
-  palabraSecreta = random(palabras);
+  cargarPalabraSecreta();
 
 
   // Input para escribir palabra con estilo
