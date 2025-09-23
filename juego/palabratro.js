@@ -7,8 +7,8 @@ let maxIntentos = 6;
 let filaActual = 0;
 let input;
 let backgroundImage;
-let size = 80; 
-let spacing = 10; 
+let size = 70; 
+let spacing = 7; 
 let boton;
 let angle = 0;
 
