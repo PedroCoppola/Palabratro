@@ -1,3 +1,9 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+session_start();
+require_once "conexion.php";
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -10,18 +16,36 @@
 <div class="layout">
 
   <div class="hoja">
-    <div class="tarjeta usuario">
-      <h2 id="usuario">Lucas</h2>
-      <p>Puntaje: <span id="puntaje">1200</span></p>
-    </div>
-<div class="info">
-    <h2>Estadísticas</h2>
-    <p><strong>Mejor puntuación:</strong> 12450</p>
-    <p><strong>Número de victorias:</strong> 27</p>
-    <p><strong>Derrotas:</strong> 5</p>
-    <p><strong>Partidas jugadas:</strong> 32</p>
+    <?php
+    if (isset($_SESSION['id'])) {
+        $id_usuario = $_SESSION['id'];
+
+        // Traer datos del usuario logueado (ahora sí incluimos fecha_creacion)
+        $sql = "SELECT username, puntaje, monedas, racha, fecha_creacion FROM usuarios WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id_usuario);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+        $usuario = $resultado->fetch_assoc();
+        ?>
+
+        <div class="tarjeta usuario">
+          <h2 id="usuario"><?php echo $usuario['username']; ?></h2>
+          <p>Puntaje: <span id="puntaje"><?php echo $usuario['puntaje']; ?></span></p>
+        </div>
+        <div class="info">
+          <h2>Estadísticas</h2>
+          <p><strong>Monedas:</strong> <?php echo $usuario['monedas']; ?></p>
+          <p><strong>Racha:</strong> <?php echo $usuario['racha']; ?></p>
+          <p><strong>Fecha de creación:</strong> <?php echo $usuario['fecha_creacion']; ?></p>
+        </div>
+
+        <?php
+    } else {
+        echo '<p class="no-session">Che, iniciá sesión <a href="login.html">acá</a></p>';
+    }
+    ?>
   </div>
-</div>
 
   <div class="container">
     <img src="img/logo_trans.png" alt="Logo de Palabrato" class="logo" width="400px">
