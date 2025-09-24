@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap');
+
+:root {
+  --azul: #0044aa;
+  --texto: #1a1a1a;
+}
+
+body {
+  font-family: 'Gloria Hallelujah', cursive;
+  background: url("../img/fondo.jpg") no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--texto);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Contenedor general */
+.container {
+  text-align: center;
+  padding: 20px;
+}
+
+/* Título principal */
+.titulo {
+  font-size: 42px;
+  margin-bottom: 20px;
+  color: var(--azul);
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #fff;
+  transform: rotate(-2deg);
+}
+
+/* Hoja con efecto */
+.hoja {
+  border-radius: 5px;
+  width: 420px;
+  min-height: 520px;
+  padding: 30px 25px;
+  background: url("../img/hoja.jpg") no-repeat center center;
+  background-size: cover;
+  border: 2px dashed var(--azul);
+  box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.5);
+  transform: rotate(-1deg);
+  margin: 0 auto;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Botón volver */
+.btn-volver {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 16px;
+  padding: 6px 10px;
+  border: 2px dashed var(--azul);
+  background: #fff;
+  color: var(--azul);
+  border-radius: 8px;
+  box-shadow: 2px 2px 0 #000;
+  text-decoration: none;
+  transform: rotate(-2deg);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.btn-volver:hover {
+  transform: rotate(2deg) scale(1.05);
+  box-shadow: 4px 4px 0 #000;
+  background: #e8f4ff;
+}
+
+/* Título dentro de la hoja */
+.hoja h2 {
+  text-align: center;
+  font-size: 24px;
+  margin: 40px 0 20px; /* espacio extra por el botón */
+  color: var(--azul);
+  text-decoration: underline;
+}
+
+/* Formulario */
+label {
+  display: block;
+  margin: 12px 0 6px;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  width: 85%;
+  padding: 12px;
+  margin-bottom: 18px;
+  border: 2px dashed var(--azul);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 16px;
+  box-shadow: 3px 3px 0 #000;
+  font-family: 'Gloria Hallelujah', cursive;
+}
+
+/* Botones */
+.btn {
+  display: block;
+  width: 260px;
+  margin: 12px auto;
+  padding: 12px 16px;
+  font-size: 18px;
+  font-weight: bold;
+  border: 3px dashed var(--azul);
+  background: #fff;
+  cursor: pointer;
+  transform: rotate(-1deg);
+  box-shadow: 3px 3px 0 #000;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s;
+  border-radius: 12px;
+  color: var(--azul);
+  font-family: 'Gloria Hallelujah', cursive;
+  text-decoration: none;
+}
+
+.btn:hover {
+  transform: rotate(1deg) scale(1.04);
+  box-shadow: 6px 6px 0 #000;
+  background: #e8f4ff;
+}
+
+.btn-registrar {
+  background: #cce5ff;
+  border-color: #003388;
+  color: #003388;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .hoja {
+    width: 90%;
+    min-height: auto;
+  }
+
+  .btn {
+    width: 90%;
+  }
+}
