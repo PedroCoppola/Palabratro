@@ -24,76 +24,13 @@ if (!$resultado) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ranking de Usuarios</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        .ranking-puesto {
-            font-weight: bold;
-            text-align: center;
-        }
-        .user-info {
-            display: flex;
-            align-items: center;
-        }
-        .user-pfp {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-            border: 2px solid #ddd;
-            object-fit: cover;
-        }
-        .user-username {
-            font-weight: bold;
-        }
-        .ranking-puntaje, .ranking-partidas {
-            text-align: right;
-        }
-    </style>
+    <link rel="stylesheet" href="css/estilo_ranking.css">
 </head>
 <body>
 
     <div class="container">
+            <a href="index.php" class="btn-volver">⬅ Volver</a>
+
         <h1>Ranking</h1>
 
         <table>
