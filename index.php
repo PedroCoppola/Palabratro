@@ -50,7 +50,7 @@ require_once "conexion.php";
   <div class="container">
     <img src="img/logo_trans.png" alt="Logo de Palabrato" class="logo" width="400px">
     <div class="btns">
-      <button class="btn carta btn-jugar" onclick="location.href='juego/index.html'">🎮 JUGAR</button>
+      <button class="btn carta btn-jugar" onclick="location.href='juego/index.php'">🎮 JUGAR</button>
       <button class="btn carta btn-ranking" onclick="location.href='ranking.php'">🏆 RANKING</button>
     </div>
   </div>
