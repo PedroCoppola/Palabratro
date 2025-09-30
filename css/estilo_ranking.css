@@ -131,7 +131,7 @@ tr:hover {
   color: var(--azul);
 }
 
-.ranking-puntaje, .ranking-partidas {
+.ranking-puntaje, .ranking-partidas, .ranking-racha {
   text-align: right;
   font-weight: bold;
 }

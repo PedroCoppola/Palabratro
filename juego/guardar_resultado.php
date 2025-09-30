@@ -36,55 +36,66 @@ if ($check) {
         $row = $res->fetch_assoc();
         $id_palabra = (int)$row['id'];
     } else {
-        // intentar insertar (si la tabla tiene solo columna palabra mínima)
         $ins = $conn->prepare("INSERT INTO palabras (palabra) VALUES (?)");
         if ($ins) {
             $ins->bind_param("s", $palabra);
-            $okIns = $ins->execute();
-            if ($okIns) $id_palabra = $conn->insert_id;
+            if ($ins->execute()) {
+                $id_palabra = $conn->insert_id;
+            }
             $ins->close();
         }
     }
     $check->close();
 }
-// Si no existe la tabla o falló, $id_palabra queda null (es aceptable por FK ON DELETE SET NULL).
 
 // Insertar partida
 if ($id_palabra !== null) {
     $sql = "INSERT INTO partidas (id_usuario, id_palabra, adivinada, intentos, pistas_usadas) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        echo json_encode(["ok" => false, "error" => "Error prepare partidas"]);
-        exit;
-    }
     $stmt->bind_param("iiiss", $idUsuario, $id_palabra, $adivinada, $intentos, $pistas);
     $okPartida = $stmt->execute();
     $stmt->close();
 } else {
-    // insertar sin id_palabra
     $sql = "INSERT INTO partidas (id_usuario, id_palabra, adivinada, intentos, pistas_usadas) VALUES (?, NULL, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        echo json_encode(["ok" => false, "error" => "Error prepare partidas no-palabra"]);
-        exit;
-    }
     $stmt->bind_param("iiis", $idUsuario, $adivinada, $intentos, $pistas);
     $okPartida = $stmt->execute();
     $stmt->close();
 }
 
-// Actualizar usuario: sumar puntaje y monedas
-$okUpdate = false;
-$up = $conn->prepare("UPDATE usuarios SET puntaje = puntaje + ?, monedas = monedas + ? WHERE id = ?");
-if ($up) {
-    $up->bind_param("iii", $puntaje, $monedas, $idUsuario);
-    $okUpdate = $up->execute();
-    $up->close();
+// ======================
+// LÓGICA DE RACHA
+// ======================
+if ($adivinada) {
+    // Ganó
+    $sql = "UPDATE usuarios 
+            SET racha = 1,
+                racha_actual = racha_actual + 1,
+                mejor_racha = GREATEST(mejor_racha, racha_actual + 0),
+                puntaje = puntaje + ?,
+                monedas = monedas + ?
+            WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iii", $puntaje, $monedas, $idUsuario);
+    $okUpdate = $stmt->execute();
+    $stmt->close();
+} else {
+    // Perdió
+    $sql = "UPDATE usuarios 
+            SET racha = 0,
+                racha_actual = 0,
+                puntaje = puntaje + ?,
+                monedas = monedas + ?
+            WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iii", $puntaje, $monedas, $idUsuario);
+    $okUpdate = $stmt->execute();
+    $stmt->close();
 }
 
-// Obtener totales nuevos para devolver
+// Obtener totales nuevos
 $newTotals = null;
-$sel = $conn->prepare("SELECT puntaje, monedas FROM usuarios WHERE id = ? LIMIT 1");
+$sel = $conn->prepare("SELECT puntaje, monedas, racha, racha_actual, mejor_racha FROM usuarios WHERE id = ? LIMIT 1");
 if ($sel) {
     $sel->bind_param("i", $idUsuario);
     $sel->execute();
@@ -98,6 +109,8 @@ if ($sel) {
 echo json_encode([
     "ok" => ($okPartida && $okUpdate),
     "nuevo_puntaje" => $newTotals ? (int)$newTotals['puntaje'] : null,
-    "nuevas_monedas" => $newTotals ? (int)$newTotals['monedas'] : null
+    "nuevas_monedas" => $newTotals ? (int)$newTotals['monedas'] : null,
+    "racha" => $newTotals ? (int)$newTotals['racha'] : null,
+    "racha_actual" => $newTotals ? (int)$newTotals['racha_actual'] : null,
+    "mejor_racha" => $newTotals ? (int)$newTotals['mejor_racha'] : null
 ]);
- 

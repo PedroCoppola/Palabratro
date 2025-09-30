@@ -17,10 +17,11 @@ if (isset($_SESSION['id'])) {
     // LÓGICA REAL DE BASE DE DATOS
     // =================================================================
     
-    // Traer datos del usuario logueado
-    $sql = "SELECT username, puntaje, monedas, racha, fecha_creacion FROM usuarios WHERE id = ?";
+    // Traer datos del usuario logueado con sus estadísticas
+    $sql = "SELECT username, puntaje, monedas, racha_actual, mejor_racha, fecha_creacion 
+            FROM usuarios 
+            WHERE id = ?";
     
-    // Usamos $conn que debería venir del require_once anterior
     $stmt = $conn->prepare($sql);
     
     if ($stmt) {
@@ -28,7 +29,7 @@ if (isset($_SESSION['id'])) {
         $stmt->execute();
         $resultado = $stmt->get_result();
         $usuario = $resultado->fetch_assoc();
-        $stmt->close(); // Cerramos el statement
+        $stmt->close();
         
         // Si encontramos un usuario, está logueado
         $usuario_logueado = $usuario !== null;
@@ -63,14 +64,25 @@ if (isset($_SESSION['id'])) {
     <div class="tarjeta-sesion">
         <?php if ($usuario_logueado): ?>
             <!-- Mostrar datos del usuario -->
-            <div class="tarjeta usuario">
-                <h2 id="usuario"><?php echo htmlspecialchars($usuario['username']); ?></h2>
-                <b><p>Puntaje:</b> <span id="puntaje"><?php echo number_format($usuario['puntaje']); ?></span></p>
-                <b><p>Monedas:</b> <span id="monedas"><?php echo number_format($usuario['monedas']); ?></span></p>
-      
-                <b><p>Racha:</b> <strong><span id="racha"><?php echo (int)$usuario['racha']; ?> días</span></strong></p>
-                <b><p>Miembro desde:</b> <?php echo date('d/m/Y', strtotime($usuario['fecha_creacion'])); ?></p>
-            </div>
+<div class="tarjeta usuario">
+    <h2 id="usuario"><?php echo htmlspecialchars($usuario['username']); ?></h2>
+
+    <b><p>Puntaje:</b> <span id="puntaje"><?php echo number_format($usuario['puntaje']); ?></span></p>
+    <b><p>Monedas:</b> <span id="monedas"><?php echo number_format($usuario['monedas']); ?></span></p>
+
+    <b><p>Racha actual:</b> 
+        <strong><span id="racha_actual">
+            <?php echo (int)$usuario['racha_actual']; ?>
+        </span> partidas</strong>
+    </p>
+
+    <b><p>Mejor racha:</b> 
+        <strong><span id="mejor_racha">
+            <?php echo (int)$usuario['mejor_racha']; ?>
+        </span> partidas</strong>
+    </p>
+</div>
+
         <?php else: ?>
             <!-- Mostrar botón de Login -->
             <h2>¡A Jugar!</h2>
@@ -82,6 +94,15 @@ if (isset($_SESSION['id'])) {
     
     <div id="game-container"></div> <!-- aquí se dibuja el canvas -->
     
+<div id="overlay">
+  <div class="overlay-box">
+    <h2 id="overlay-titulo"></h2>
+    <p id="overlay-mensaje"></p>
+    <button id="btn-restart"><span>Jugar de nuevo</span></button>
+  </div>
+</div>
+
+
     <!-- Botón de ayuda y Modal -->
     <button id="btn-ayuda">?</button>
     <div id="ayuda-modal">

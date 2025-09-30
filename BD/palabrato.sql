@@ -3,9 +3,12 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-09-2025 a las 21:30:27
+-- Tiempo de generación: 30-09-2025 a las 03:50:29
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
+
+DROP DATABASE palabrato;
+CREATE DATABASE IF NOT EXISTS `palabrato` DEFAULT CHARACTER SET utf8mb4 COLLATE
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -111,7 +114,6 @@ INSERT INTO `palabras` (`id`, `palabra`, `palabra_sin_acento`, `longitud`, `defi
 (67, 'SOLAR', 'SOLAR', 5, 'Relacionado al sol.', 'Energía natural.', 'Aguda'),
 (68, 'CRUZ', 'CRUZO', 5, 'Símbolo religioso.', 'Figura con 4 puntas.', 'Aguda'),
 (69, 'CLAVE', 'CLAVE', 5, 'Código o solución.', 'Sirve para entrar.', 'Grave'),
-(70, 'CODIGO', 'CODIG', 5, 'Conjunto de símbolos.', 'Usado en informática.', 'Grave'),
 (71, 'DATOS', 'DATOS', 5, 'Información concreta.', 'Se procesan.', 'Grave'),
 (72, 'LISTA', 'LISTA', 5, 'Conjunto ordenado.', 'Puede ser de compras.', 'Grave'),
 (73, 'NOTAS', 'NOTAS', 5, 'Apuntes escritos o musicales.', 'Sirven para estudiar.', 'Grave'),
@@ -146,6 +148,23 @@ CREATE TABLE `partidas` (
   `pistas_usadas` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `partidas`
+--
+
+INSERT INTO `partidas` (`id`, `id_usuario`, `id_palabra`, `fecha_partida`, `adivinada`, `intentos`, `pistas_usadas`) VALUES
+(1, 1, 28, '2025-09-29 21:56:51', 1, 2, ''),
+(2, 1, NULL, '2025-09-30 00:28:07', 1, 1, ''),
+(3, 1, 65, '2025-09-30 00:28:45', 1, 1, ''),
+(4, 1, 35, '2025-09-30 00:35:49', 0, 6, ''),
+(5, 1, 51, '2025-09-30 00:36:17', 0, 6, ''),
+(6, 1, 69, '2025-09-30 00:36:43', 0, 6, ''),
+(7, 1, 77, '2025-09-30 00:38:08', 1, 1, ''),
+(8, 2, 27, '2025-09-30 00:58:57', 1, 1, ''),
+(9, 2, 32, '2025-09-30 00:59:06', 1, 1, ''),
+(10, 2, 86, '2025-09-30 00:59:12', 1, 1, ''),
+(11, 2, 15, '2025-09-30 00:59:17', 1, 1, '');
+
 -- --------------------------------------------------------
 
 --
@@ -177,8 +196,18 @@ CREATE TABLE `usuarios` (
   `puntaje` bigint(20) DEFAULT 0,
   `pfp` varchar(255) DEFAULT NULL,
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
-  `racha` tinyint(1) DEFAULT 0
+  `racha` tinyint(1) DEFAULT 0,
+  `racha_actual` int(11) DEFAULT 0,
+  `mejor_racha` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id`, `username`, `contraseña`, `email`, `monedas`, `puntaje`, `pfp`, `fecha_creacion`, `racha`, `racha_actual`, `mejor_racha`) VALUES
+(1, 'Pedrotudo', '$2y$10$J.6Xd0OFpe7QWetqEX2z2uui0U.ptFTNlyA0pB04wjYRRCXqW8WiW', 'pedroicoppola@gmail.com', 58, 13925, NULL, '2025-09-23 23:54:42', 1, 1, 2),
+(2, 'pelotudo', '$2y$10$uU0Pq7wHOgqD4NYnSHHOIOi72nZDeBC394AVzRu4yl2NpTcKTJYIe', 'asd@gmail.com', 48, 12000, NULL, '2025-09-30 00:58:13', 1, 4, 4);
 
 --
 -- Índices para tablas volcadas
@@ -226,7 +255,7 @@ ALTER TABLE `palabras`
 -- AUTO_INCREMENT de la tabla `partidas`
 --
 ALTER TABLE `partidas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `pistas`
@@ -238,7 +267,7 @@ ALTER TABLE `pistas`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Restricciones para tablas volcadas

@@ -86,6 +86,12 @@ function setup() {
   boton.style('box-shadow', '3px 3px 0 #000');
   boton.style('font-family', "'Gloria Hallelujah', cursive");
   boton.mousePressed(probarPalabra);
+
+  let btnRestart = select("#btn-restart");
+  btnRestart.mousePressed(() => {
+    location.reload(); // recarga la página y arranca de nuevo
+  });
+
 }
 
 function draw() {
@@ -106,11 +112,12 @@ function draw() {
 
   // Mensajes finales después de agotar intentos o ganar
   if (filaActual >= maxIntentos && !gano()) {
-    text("No adivinaste nada wachin 😭", width / 2, height / 2);
+    noLoop();
+    mostrarOverlay(false, palabraSecreta);
   }
   if (gano()) {
-    text("¡Adivinaste! 🎉", width / 2, height / 2);
-
+    noLoop();
+    mostrarOverlay(true, palabraSecreta);
     if (!window.puntajeGuardado) { // para que no lo guarde varias veces
       window.puntajeGuardado = true;
 
@@ -168,6 +175,23 @@ function probarPalabra() {
 function gano() {
   return intentos.some(fila => fila.esCorrecta());
 }
+
+function mostrarOverlay(ganaste, palabraSecreta) {
+  let overlay = select("#overlay");
+  let titulo = select("#overlay-titulo");
+  let mensaje = select("#overlay-mensaje");
+
+  if (ganaste) {
+    titulo.html("🎉 ¡Ganaste!");
+    mensaje.html("La palabra era <b>" + palabraSecreta + "</b>");
+  } else {
+    titulo.html("😭 Perdiste");
+    mensaje.html("La palabra era <b>" + palabraSecreta + "</b>");
+  }
+
+  overlay.style("display", "flex"); // mostrar overlay
+}
+
 
 function calcularPuntaje(palabraSecreta, intentos, attemptsUsed, maxIntentos) {
   // letras únicas de la palabra secreta
