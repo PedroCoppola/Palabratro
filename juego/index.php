@@ -54,84 +54,7 @@ if (isset($_SESSION['id'])) {
     <!-- OK, YOU CAN MAKE CHANGES BELOW THIS LINE AGAIN -->
     <style>
         /* CSS para el botón de ayuda y el modal (copiado de la respuesta anterior, simplificado) */
-        #btn-ayuda {
-            position: fixed; bottom: 20px; left: 20px; width: 40px; height: 40px;
-            background-color: #003388; color: white; border: none; border-radius: 50%;
-            font-size: 24px; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 1000;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-            font-family: Arial, sans-serif;
-        }
-        #ayuda-modal {
-            position: fixed; top: 50%; left: 50px; transform: translateY(-50%); width: 300px;
-            background-color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1001; display: none;
-            font-family: 'Gloria Hallelujah', cursive;
-        }
 
-        /* ESTILOS CORREGIDOS Y SIMPLIFICADOS PARA LA TARJETA DE SESIÓN */
-        .tarjeta-sesion {
-            position: fixed; /* ¡La clave para que no rompa el layout! */
-            top: 20px;
-            left: 20px;
-            width: 250px; /* Más sutil */
-            padding: 15px;
-            background-color: rgba(255, 255, 255, 0.95); /* Fondo casi blanco semi-transparente */
-            border-radius: 10px;
-            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
-            font-family: 'Gloria Hallelujah', cursive; 
-            color: #000;
-            z-index: 50;
-            box-sizing: border-box;
-            border: 2px solid #003388; /* Borde azul oscuro del juego */
-        }
-        
-        .tarjeta-sesion h2 {
-            font-size: 1.2rem;
-            margin-top: 0;
-            color: #003388; /* Color del texto principal */
-            text-align: center;
-            border-bottom: 2px dashed #ccc;
-            padding-bottom: 5px;
-        }
-        .tarjeta-sesion p {
-            font-size: 0.9rem;
-            margin: 5px 0;
-            text-align: left;
-        }
-        .tarjeta-sesion .btn-login {
-            display: block;
-            margin-top: 15px;
-            padding: 10px;
-            text-align: center;
-            background-color: #cce5ff;
-            color: #003388;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            border: 2px solid #003388;
-            box-shadow: 2px 2px 0 #000;
-        }
-
-        /* Quitamos el .hoja estático que no querías */
-        .hoja {
-            /* Mantenemos este estilo por si lo usa el div flotante de la derecha */
-            border-radius: 5px;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%) rotate(-1deg);
-            width: 410px;
-            min-height: 500px;
-            padding: 36px 26px;
-            background: url("../img/hoja.jpg") no-repeat center center;
-            background-size: cover;
-            border: 2px dashed var(--azul);
-            box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.5);
-            font-family: 'Gloria Hallelujah', cursive;
-            color: #000;
-            z-index: 6;
-            box-sizing: border-box;
-            margin-left: 40px;
-        }
     </style>
 </head>
 
@@ -142,12 +65,11 @@ if (isset($_SESSION['id'])) {
             <!-- Mostrar datos del usuario -->
             <div class="tarjeta usuario">
                 <h2 id="usuario"><?php echo htmlspecialchars($usuario['username']); ?></h2>
-                <p>Puntaje: <span id="puntaje"><?php echo number_format($usuario['puntaje']); ?></span></p>
-                <p>Monedas: <span id="monedas"><?php echo number_format($usuario['monedas']); ?></span></p>
-            </div>
-            <div class="info">
-                <p>Racha: <strong><span id="racha"><?php echo (int)$usuario['racha']; ?> días</span></strong></p>
-                <p>Miembro desde: <?php echo date('d/m/Y', strtotime($usuario['fecha_creacion'])); ?></p>
+                <b><p>Puntaje:</b> <span id="puntaje"><?php echo number_format($usuario['puntaje']); ?></span></p>
+                <b><p>Monedas:</b> <span id="monedas"><?php echo number_format($usuario['monedas']); ?></span></p>
+      
+                <b><p>Racha:</b> <strong><span id="racha"><?php echo (int)$usuario['racha']; ?> días</span></strong></p>
+                <b><p>Miembro desde:</b> <?php echo date('d/m/Y', strtotime($usuario['fecha_creacion'])); ?></p>
             </div>
         <?php else: ?>
             <!-- Mostrar botón de Login -->
