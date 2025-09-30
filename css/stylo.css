@@ -72,6 +72,14 @@ body {
   color: #880000;
 }
 
+.user-pfp {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px dashed var(--azul);
+  box-shadow: 2px 2px 0 #000;
+  object-fit: cover;
+}
 
 /* HOJA */
 .hoja {

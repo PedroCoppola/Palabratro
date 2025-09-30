@@ -18,7 +18,7 @@ if (isset($_SESSION['id'])) {
     // =================================================================
     
     // Traer datos del usuario logueado con sus estadísticas
-    $sql = "SELECT username, puntaje, monedas, racha_actual, mejor_racha, fecha_creacion 
+    $sql = "SELECT username, puntaje, monedas, racha_actual, mejor_racha, fecha_creacion, pfp
             FROM usuarios 
             WHERE id = ?";
     
@@ -34,6 +34,8 @@ if (isset($_SESSION['id'])) {
         // Si encontramos un usuario, está logueado
         $usuario_logueado = $usuario !== null;
     }
+
+    
 }
 
 ?>
