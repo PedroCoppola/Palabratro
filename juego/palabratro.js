@@ -10,10 +10,15 @@ let size = 70;
 let spacing = 7;
 let boton;
 let angle = 0;
+let palabrasValidas = new Set();
+
 
 // Cargar el fondo
 function preload() {
   backgroundImage = loadImage('fondo.jpg');
+    loadJSON("palabras_5letras.json", data => {
+    palabrasValidas = new Set(data.map(p => p.toUpperCase()));
+  });
 }
 
 async function cargarPalabraSecreta() {
@@ -136,39 +141,43 @@ function probarPalabra() {
   if (filaActual >= maxIntentos || gano()) return;
 
   let palabra = input.value().toUpperCase();
+
+  // 🔹 Validar longitud
   if (palabra.length !== 5) {
     alert("La palabra debe tener 5 letras");
     return;
   }
 
+  // 🔹 Validar existencia en diccionario
+  if (!palabrasValidas.has(palabra)) {
+    alert("Esa palabra no existe 😅");
+    return;
+  }
+
+  // 🔹 Registrar intento
   let fila = new Fila(filaActual, palabra, palabraSecreta);
   intentos.push(fila);
   filaActual++;
   input.value("");
 
-  // calcular y guardar si ganó en este intento
+  // 🔹 Caso GANÓ
   if (fila.esCorrecta()) {
     if (!window.resultadoGuardado) {
       window.resultadoGuardado = true;
       const attemptsUsed = filaActual; // ya incrementado
       const res = calcularPuntaje(palabraSecreta, intentos, attemptsUsed, maxIntentos);
-      // llamado al servidor
-      guardarResultado(ID_USUARIO_ACTUAL, palabraSecreta, true, attemptsUsed, res.puntaje, res.monedas, "");
+
+      guardarResultado(
+        ID_USUARIO_ACTUAL,
+        palabraSecreta,
+        true,               // adivinada
+        attemptsUsed,
+        res.puntaje,
+        res.monedas,
+        ""
+      );
     }
     return;
-  }
-
-  // si agotó intentos y no adivinó, guardar partida perdida (opcionalmente con puntaje chico)
-  if (filaActual >= maxIntentos && !gano()) {
-    if (!window.resultadoGuardado) {
-      window.resultadoGuardado = true;
-      const attemptsUsed = filaActual;
-      // calculo reducidito si perdió
-      const res = calcularPuntaje(palabraSecreta, intentos, attemptsUsed, maxIntentos);
-      // por perder, ponemos 0 monedas y una fracción del puntaje (ajustalo)
-      const puntajePerdida = Math.max(0, Math.round(res.puntaje * 0.15));
-      guardarResultado(ID_USUARIO_ACTUAL, palabraSecreta, false, attemptsUsed, puntajePerdida, 0, "");
-    }
   }
 }
 
@@ -389,4 +398,3 @@ class Cuadrado {
     this.estado = estado;
   }
 }
-
