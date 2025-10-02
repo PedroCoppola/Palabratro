@@ -72,6 +72,14 @@ body {
   color: #880000;
 }
 
+.user-pfp {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px dashed var(--azul);
+  box-shadow: 2px 2px 0 #000;
+  object-fit: cover;
+}
 
 /* HOJA */
 .hoja {
@@ -79,8 +87,8 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%) rotate(-1deg);
-  width: 450px;
-  min-height: 560px;
+  width: 410px;
+  min-height: 500px;
   padding: 36px 26px;
   background: url("../img/hoja.jpg") no-repeat center center;
   background-size: cover;
@@ -91,7 +99,7 @@ body {
   color: #000;
   z-index: 6;
   box-sizing: border-box;
-  margin-left: 250px;
+  margin-left: 40px;
 }
 
 .info {

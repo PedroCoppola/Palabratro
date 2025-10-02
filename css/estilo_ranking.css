@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap');
+
+:root {
+  --azul: #0044aa;
+  --texto: #1a1a1a;
+  --rojo: #aa0000;
+}
+
+body {
+  font-family: 'Gloria Hallelujah', cursive;
+  background: url("../img/fondo.jpg") no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--texto);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Contenedor hoja */
+.container {
+  border-radius: 5px;
+  width: 900px;
+  min-height: 600px;
+  padding: 40px 30px;
+  background: url("../img/hoja.jpg") no-repeat center center;
+  background-size: cover;
+  border: 2px dashed var(--azul);
+  box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.5);
+  transform: rotate(-1deg);
+  box-sizing: border-box;
+  margin: 30px auto;
+  position: relative;
+}
+
+/* Título */
+h1 {
+  text-align: center;
+  font-size: 38px;
+  margin-bottom: 25px;
+  color: var(--azul);
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #fff;
+  transform: rotate(-2deg);
+  text-decoration: underline;
+}
+
+/* Botón volver */
+.btn-volver {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 16px;
+  padding: 6px 10px;
+  border: 2px dashed var(--azul);
+  background: #fff;
+  color: var(--azul);
+  border-radius: 8px;
+  box-shadow: 2px 2px 0 #000;
+  text-decoration: none;
+  transform: rotate(-2deg);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.btn-volver:hover {
+  transform: rotate(2deg) scale(1.05);
+  box-shadow: 4px 4px 0 #000;
+  background: #e8f4ff;
+}
+
+/* Tabla */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 3px dashed var(--azul);
+  border-radius: 12px;
+  box-shadow: 4px 4px 0 #000;
+  transform: rotate(-1deg);
+  overflow: hidden;
+}
+
+th, td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 2px dashed #ccc;
+}
+
+th {
+  background: #cce5ff;
+  color: var(--azul);
+  font-weight: bold;
+  text-transform: uppercase;
+  border-bottom: 3px solid var(--azul);
+}
+
+tr:nth-child(even) {
+  background: rgba(200, 200, 200, 0.2);
+}
+
+tr:hover {
+  background: #e8f4ff;
+}
+
+/* Columnas */
+.ranking-puesto {
+  font-weight: bold;
+  text-align: center;
+  color: var(--rojo);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-pfp {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px dashed var(--azul);
+  box-shadow: 2px 2px 0 #000;
+  object-fit: cover;
+}
+
+.user-username {
+  font-weight: bold;
+  font-size: 18px;
+  color: var(--azul);
+}
+
+.ranking-puntaje, .ranking-partidas, .ranking-racha {
+  text-align: right;
+  font-weight: bold;
+}
+
+/* Botón volver */
+.btn-volver {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 16px;
+  padding: 6px 10px;
+  border: 2px dashed var(--azul);
+  background: #fff;
+  color: var(--azul);
+  border-radius: 8px;
+  box-shadow: 2px 2px 0 #000;
+  text-decoration: none;
+  transform: rotate(-2deg);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.btn-volver:hover {
+  transform: rotate(2deg) scale(1.05);
+  box-shadow: 4px 4px 0 #000;
+  background: #e8f4ff;
+}

@@ -1,100 +1,53 @@
 <?php
-// Incluye el archivo de conexión a la base de datos
 require 'conexion.php';
 
-// Consulta SQL para obtener los datos del ranking
-$sql = "SELECT u.pfp, u.username, u.puntaje, COUNT(p.id) AS partidas_jugadas
+// Definir criterio de orden: puntaje por defecto
+$orden = isset($_GET['orden']) ? $_GET['orden'] : 'puntaje';
+
+// Seguridad: solo permitir ciertas opciones
+$orden_permitidos = [
+    'puntaje' => 'u.puntaje DESC',
+    'racha' => 'u.mejor_racha DESC',
+    'partidas' => 'partidas_jugadas DESC'
+];
+$orderBy = isset($orden_permitidos[$orden]) ? $orden_permitidos[$orden] : $orden_permitidos['puntaje'];
+
+// Consulta SQL
+$sql = "SELECT u.pfp, u.username, u.puntaje, u.mejor_racha, COUNT(p.id) AS partidas_jugadas
         FROM usuarios AS u
         LEFT JOIN partidas AS p ON u.id = p.id_usuario
         GROUP BY u.id
-        ORDER BY u.puntaje DESC";
+        ORDER BY $orderBy";
 
 $resultado = mysqli_query($conn, $sql);
 
-// Verificar si la consulta fue exitosa
 if (!$resultado) {
     die("Error en la consulta: " . mysqli_error($conn));
 }
-
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ranking de Usuarios</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        .ranking-puesto {
-            font-weight: bold;
-            text-align: center;
-        }
-        .user-info {
-            display: flex;
-            align-items: center;
-        }
-        .user-pfp {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-            border: 2px solid #ddd;
-            object-fit: cover;
-        }
-        .user-username {
-            font-weight: bold;
-        }
-        .ranking-puntaje, .ranking-partidas {
-            text-align: right;
-        }
-    </style>
+    <link rel="stylesheet" href="css/estilo_ranking.css">
 </head>
 <body>
-
     <div class="container">
+        <a href="index.php" class="btn-volver">⬅ Volver</a>
+
         <h1>Ranking</h1>
+
+        <!-- Selector de orden -->
+        <form method="get" class="orden-form">
+            <label for="orden">Ordenar por:</label>
+            <select name="orden" id="orden" onchange="this.form.submit()">
+                <option value="puntaje" <?php if($orden==='puntaje') echo 'selected'; ?>>Puntaje</option>
+                <option value="racha" <?php if($orden==='racha') echo 'selected'; ?>>Mejor racha</option>
+                <option value="partidas" <?php if($orden==='partidas') echo 'selected'; ?>>Partidas jugadas</option>
+            </select>
+        </form>
 
         <table>
             <thead>
@@ -103,6 +56,7 @@ if (!$resultado) {
                     <th>Usuario</th>
                     <th style="text-align: right;">Puntaje</th>
                     <th style="text-align: right;">Partidas</th>
+                    <th style="text-align: right;">Mejor racha</th>
                 </tr>
             </thead>
             <tbody>
@@ -110,8 +64,7 @@ if (!$resultado) {
                 $puesto = 1;
                 if (mysqli_num_rows($resultado) > 0) {
                     while($fila = mysqli_fetch_assoc($resultado)) {
-                        // Determina la ruta de la imagen de perfil
-                        $pfp_ruta = $fila['pfp'] ? $fila['pfp'] : 'default.png';
+                        $pfp_ruta = $fila['pfp'] ? $fila['pfp'] : 'img/default.jpg';
                 ?>
                         <tr>
                             <td class="ranking-puesto"><?php echo $puesto++; ?></td>
@@ -123,21 +76,19 @@ if (!$resultado) {
                             </td>
                             <td class="ranking-puntaje"><?php echo number_format($fila['puntaje'], 0, ',', '.'); ?></td>
                             <td class="ranking-partidas"><?php echo $fila['partidas_jugadas']; ?></td>
+                            <td class="ranking-racha"><?php echo (int)$fila['mejor_racha']; ?></td>
                         </tr>
                 <?php
                     }
                 } else {
-                    echo "<tr><td colspan='4'>No hay usuarios para mostrar.</td></tr>";
+                    echo "<tr><td colspan='5'>No hay usuarios para mostrar.</td></tr>";
                 }
                 ?>
             </tbody>
         </table>
     </div>
-
 </body>
 </html>
-
 <?php
-// Cierra la conexión a la base de datos
 mysqli_close($conn);
 ?>

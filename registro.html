@@ -3,22 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Registro</title>
-    <link rel="stylesheet" href="css/estilos.css">
-
+    <link rel="stylesheet" href="css/estilo_registro.css">
 </head>
 <body>
-    <h2>Crear una cuenta</h2>
-    <form action="registro.php" method="POST">
+  <div class="container">
+    <h1 class="titulo">Únete</h1>
+
+    <div class="hoja">
+      <!-- Botón volver -->
+      <a href="login.html" class="btn-volver">⬅ Volver</a>
+
+      <h2>Crear una cuenta</h2>
+      <form action="registro.php" method="POST">
         <label for="username">Nombre de usuario:</label>
-        <input type="text" name="username" required><br><br>
+        <input type="text" name="username" id="username" required>
 
         <label for="email">Correo electrónico:</label>
-        <input type="email" name="email" required><br><br>
+        <input type="email" name="email" id="email" required>
 
         <label for="contraseña">Contraseña:</label>
-        <input type="password" name="contraseña" required><br><br>
+        <input type="password" name="contraseña" id="contraseña" required>
 
-        <input type="submit" value="Registrarse">
-    </form>
+        <button type="submit" class="btn btn-registrar">Registrarse</button>
+      </form>
+    </div>
+  </div>
 </body>
 </html>

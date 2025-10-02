@@ -1,5 +1,5 @@
 <?php
-session_start();
+// conexion.php
 
 // Configura tus datos de conexión
 $host = "localhost";
@@ -13,6 +13,4 @@ $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
-    
 ?>
-
