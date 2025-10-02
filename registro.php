@@ -1,44 +1,74 @@
 <?php
-// Configura los datos de tu conexión
 require_once "conexion.php";
 
-// Obtener datos del formulario
-$username = $_POST['username'];
-$email = $_POST['email'];
-$contraseña = $_POST['contraseña'];
+$mensaje = "";
 
-// Validar que no estén vacíos
-if (empty($username) || empty($email) || empty($contraseña)) {
-    die("Todos los campos son obligatorios.");
+// Solo procesamos si se envió el formulario
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $username = $_POST['username'] ?? "";
+    $contraseña = $_POST['contraseña'] ?? "";
+
+    if (empty($username) || empty($contraseña)) {
+        $mensaje = "Todos los campos son obligatorios.";
+    } else {
+
+        // Lista de palabras prohibidas
+        $palabrasProhibidas = [
+            "puto","boludo","gil","idiota","hijo de puta","imbecil",
+            "estupido","pendejo","cabrón","forro","tarado","mamerto",
+            "pelotudo","mierda","culiao","facho","tonto","payaso",
+            "cagon","zorra","perra","pajero","huevon","facho","basura",
+            "malparido","cornudo","choto","maricón","sorete","pichón",
+            "bobo","chupapija","gilipollas","mongol","peluca","trol",
+            "cabron","idiota","chupamedias","baboso","maldito","bestia",
+            "loco","culo","imbecil","mentiroso","malparida","bruto","zopenco"
+        ];
+
+        // Función para normalizar texto
+        function normalizarTexto($texto) {
+            $texto = strtolower($texto);
+            $texto = str_replace(
+                ['0','@','1','!','3','4','5','7'],
+                ['o','o','i','i','e','a','s','t'],
+                $texto
+            );
+            $texto = preg_replace("/[^a-z\s]/", "", $texto);
+            return $texto;
+        }
+
+        // Validar nombre de usuario prohibido
+        $usernameNormalizado = normalizarTexto($username);
+        foreach ($palabrasProhibidas as $palabra) {
+            if (strpos($usernameNormalizado, normalizarTexto($palabra)) !== false) {
+                $mensaje = "Nombre de usuario inapropiado. No se permite login 😎";
+                echo $mensaje;
+                exit; // bloquea el login
+            }
+        }
+
+        // Si pasó la validación, buscar usuario en BD
+        $stmt = $conn->prepare("SELECT id, contraseña FROM usuarios WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $stmt->store_result();
+
+        if ($stmt->num_rows === 0) {
+            $mensaje = "Usuario no encontrado.";
+        } else {
+            $stmt->bind_result($id, $hash);
+            $stmt->fetch();
+
+            if (password_verify($contraseña, $hash)) {
+                $mensaje = "¡Bienvenido, $username!";
+            } else {
+                $mensaje = "Contraseña incorrecta.";
+            }
+        }
+
+        $stmt->close();
+        $conn->close();
+        echo $mensaje;
+    }
 }
-
-// Verificar que no exista el usuario o email
-$stmt = $conn->prepare("SELECT id FROM usuarios WHERE username = ? OR email = ?");
-$stmt->bind_param("ss", $username, $email);
-$stmt->execute();
-$stmt->store_result();
-
-if ($stmt->num_rows > 0) {
-    echo "El nombre de usuario o correo ya están registrados.";
-    $stmt->close();
-    $conn->close();
-    exit;
-}
-$stmt->close();
-
-// Hashear la contraseña
-$contraseña_hash = password_hash($contraseña, PASSWORD_BCRYPT);
-
-// Insertar nuevo usuario
-$stmt = $conn->prepare("INSERT INTO usuarios (username, contraseña, email) VALUES (?, ?, ?)");
-$stmt->bind_param("sss", $username, $contraseña_hash, $email);
-
-if ($stmt->execute()) {
-    echo "¡Cuenta creada con éxito! <a href='login.html'>Iniciar sesión</a>";
-} else {
-    echo "Error al crear la cuenta: " . $stmt->error;
-}
-
-$stmt->close();
-$conn->close();
 ?>
