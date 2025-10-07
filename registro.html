@@ -1,9 +1,66 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Registro</title>
-    <link rel="stylesheet" href="css/estilo_registro.css">
+  <meta charset="UTF-8">
+  <title>Registro</title>
+  <link rel="stylesheet" href="css/estilo_registro.css">
+  <style>
+    /* === Modal tipo hoja === */
+    #registro-exitoso-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      width: 360px;
+      min-height: 410px;
+      padding: 26px;
+      background: url("img/hoja.jpg") no-repeat center center;
+      background-size: cover;
+      border: 2px dashed var(--azul, #2a71d0);
+      border-radius: 5px;
+      box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.5),
+                  0 4px 8px rgba(0, 0, 0, 0.2);
+      color: #000;
+      font-family: 'Gloria Hallelujah', cursive;
+      z-index: 999;
+      box-sizing: border-box;
+      text-align: center;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.4s ease, transform 0.3s ease;
+    }
+
+    #registro-exitoso-modal.show {
+      display: block;
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    #registro-exitoso-modal h2 {
+      font-size: 26px;
+      margin-bottom: 10px;
+    }
+
+    #registro-exitoso-modal p {
+      font-size: 18px;
+      margin: 10px 0 20px;
+    }
+
+    #btn-continuar {
+      background-color: #2a71d0;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 18px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    #btn-continuar:hover {
+      background-color: #1e57a3;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -14,7 +71,7 @@
       <a href="login.html" class="btn-volver">⬅ Volver</a>
 
       <h2>Crear una cuenta</h2>
-      <form action="registro.php" method="POST">
+      <form id="formRegistro">
         <label for="username">Nombre de usuario:</label>
         <input type="text" name="username" id="username" required>
 
@@ -28,5 +85,46 @@
       </form>
     </div>
   </div>
+
+  <!-- Modal de éxito -->
+  <div id="registro-exitoso-modal">
+    <h2>🎉 ¡Registro Exitoso!</h2>
+    <p>Bienvenido a <strong>Palabratro</strong> 😎<br>
+    ¡Ya podés empezar a jugar!</p>
+    <button id="btn-continuar">Continuar</button>
+  </div>
+
+  <script>
+    const form = document.getElementById("formRegistro");
+    const modal = document.getElementById("registro-exitoso-modal");
+    const btnContinuar = document.getElementById("btn-continuar");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+
+      try {
+        const res = await fetch("registro.php", {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+
+        if (data.ok) {
+          modal.classList.add("show"); // muestra la hoja modal
+        } else {
+          alert("⚠️ " + data.error);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("❌ Error de conexión con el servidor.");
+      }
+    });
+
+    btnContinuar.addEventListener("click", () => {
+      window.location.href = "index.php";
+    });
+  </script>
 </body>
 </html>
