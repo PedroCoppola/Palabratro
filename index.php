@@ -60,8 +60,12 @@ if (isset($_SESSION['id'])) {
 
 <?php
 } else {
-    echo '<p class="no-session">Che, iniciá sesión <a href="login.html">acá</a></p>';
-}
+
+   echo '<p style="text-align:center;">Inicia sesión para guardar tu progreso, puntajes y monedas.</p>';
+
+echo '<a href="login.html" class="btn-login">INICIAR SESIÓN</a>';
+
+ }
 ?>
 </div>
 
