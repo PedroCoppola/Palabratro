@@ -125,3 +125,9 @@ input[type="password"] {
     width: 90%;
   }
 }
+
+.btn-volver {
+  background: #d6ffd6;
+  border-color: #008800;
+  color: #008800;
+}
