@@ -57,6 +57,13 @@ if (isset($_SESSION['id'])) {
 </p>
 
         <p><strong>Fecha de creación:</strong> <?php echo htmlspecialchars($usuario['fecha_creacion']); ?></p>
+    
+    <form action="logout.php" method="POST">
+  <button type="submit" class="btn carta btn-logout"> Cerrar sesión</button>
+</form>
+
+
+      </div>
 
     </div>
     
