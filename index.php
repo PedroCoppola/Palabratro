@@ -35,7 +35,8 @@ if (isset($_SESSION['id'])) {
     <div class="tarjeta usuario">
         <img src="<?php echo htmlspecialchars($pfp_ruta); ?>" alt="Foto de perfil" class="user-pfp">
         <h2 id="usuario"><?php echo htmlspecialchars($usuario['username']); ?></h2>
-        <p>Puntaje: <span id="puntaje"><?php echo number_format($usuario['puntaje']); ?></span></p>
+        <p>Puntaje: <span id="puntaje"><?php echo number_format($usuario['puntaje']); ?></span>        <a href="editarperfil.php" class="btn-login">Editar perfil</a>
+</p>
     </div>
 
     <div class="info">
@@ -64,6 +65,9 @@ if (isset($_SESSION['id'])) {
 
       </div>
 
+    </div>
+    
+  
 <?php
 } else {
 

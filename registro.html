@@ -45,17 +45,23 @@
       font-size: 18px;
       margin: 10px 0 20px;
     }
-
-    #btn-continuar {
-      background-color: #2a71d0;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      font-size: 18px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
+.btn-continuar {
+  display: block;
+  width: 270px;
+  margin: 12px auto;
+  padding: 14px 18px;
+  font-size: 18px;
+  font-weight: bolder;
+  border: 3px dashed var(--azul);
+  background: #fff;
+  cursor: pointer;
+  transform: rotate(-1deg);
+  box-shadow: 3px 3px 0 #000;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s;
+  border-radius: 12px;
+  color: var(--azul);
+  font-family: 'Gloria Hallelujah', cursive;
+}
 
     #btn-continuar:hover {
       background-color: #1e57a3;
@@ -100,27 +106,36 @@
     const btnContinuar = document.getElementById("btn-continuar");
 
     form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+  e.preventDefault();
 
-      const formData = new FormData(form);
+  const formData = new FormData(form);
 
-      try {
-        const res = await fetch("registro.php", {
-          method: "POST",
-          body: formData
-        });
-        const data = await res.json();
-
-        if (data.ok) {
-          modal.classList.add("show"); // muestra la hoja modal
-        } else {
-          alert("⚠️ " + data.error);
-        }
-      } catch (err) {
-        console.error(err);
-        alert("❌ Error de conexión con el servidor.");
-      }
+  try {
+    const res = await fetch("registro.php", {
+      method: "POST",
+      body: formData
     });
+
+    const text = await res.text(); // leemos como texto primero
+    console.log("Respuesta bruta del servidor:", text); // debug visual
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (err) {
+      throw new Error("Respuesta no es JSON válido");
+    }
+
+    if (data.ok) {
+      modal.classList.add("show");
+    } else {
+      alert("⚠️ " + data.error);
+    }
+  } catch (err) {
+    console.error(err);
+    alert("❌ Error de conexión con el servidor o formato inválido.");
+  }
+});
 
     btnContinuar.addEventListener("click", () => {
       window.location.href = "index.php";
