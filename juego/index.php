@@ -7,7 +7,7 @@ require_once '../conexion.php';
 session_start(); // Asegúrate de iniciar la sesión
 
 $usuario_logueado = false;
-$usuario = null;
+$usuario = null; 
 $id_usuario = null; // Inicializamos para que la constante de JS no tenga problemas
 
 if (isset($_SESSION['id'])) {

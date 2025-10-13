@@ -8,14 +8,13 @@ header('Content-Type: application/json');
 // ======================
 $username = trim($_POST['username'] ?? '');
 $email = trim($_POST['email'] ?? '');
-$pass = trim($_POST['contraseña'] ?? ''); // nombre de input en HTML es "contraseña"
+$pass = trim($_POST['contraseña'] ?? '');
 
 if (empty($username) || empty($email) || empty($pass)) {
     echo json_encode(["ok" => false, "error" => "Faltan campos obligatorios."]);
     exit;
 }
 
-// Validar formato de email
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo json_encode(["ok" => false, "error" => "El correo electrónico no es válido."]);
     exit;
@@ -33,6 +32,10 @@ $palabrotas = [
     "VAGINA","PANOCHA","PICHULA","CORNUDO","TONTO","TONTITO","DOWN","GILIPOLLAS",
     "CHOTO","FORRO","GARCA","CARETA","CHANTA","CROTO","ATORRANTE","LELO","BOLASTRISTE","MAMARRACHO",
     "INUTIL","PAPANATAS","SOPENCO","SORETE","MIERDA","CAGAR","ORTIVA"
+=======
+    "FOLLAR","COJER","PELOTUDO","GIL","TARADO","ESTUPIDO","IMBECIL","PELOTUDO","IDIOTA","CAGON",
+    "PENE","VAGINA"
+>>>>>>> 4b0ba9f4d5e248dd63ceab11396e0ec495b09fb4
 ];
 $username_upper = strtoupper($username);
 
@@ -72,13 +75,12 @@ if (!$insert) {
 
 $insert->bind_param("sss", $username, $hashed, $email);
 $ok = $insert->execute();
-$insert->close();
 
 if ($ok) {
-    // 🔸 Iniciar sesión automáticamente
-    $_SESSION['id'] = $conn->insert_id;
+    $_SESSION['id'] = $insert->insert_id;
     echo json_encode(["ok" => true, "msg" => "Registro exitoso."]);
 } else {
     echo json_encode(["ok" => false, "error" => "Error al registrar el usuario."]);
 }
+$insert->close();
 ?>

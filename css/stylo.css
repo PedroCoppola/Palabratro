@@ -35,6 +35,22 @@ body {
   transform: rotate(-2deg);
 }
 
+
+.btn-login {
+  display: block;
+  margin-top: 15px;
+  padding: 10px;
+  text-align: center;
+  background-color: #cce5ff;
+  color: #003388;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  border: 2px solid #003388;
+  box-shadow: 2px 2px 0 #000;
+}
+
+
 .btn {
   display: block;
   width: 270px;
@@ -100,6 +116,7 @@ body {
   z-index: 6;
   box-sizing: border-box;
   margin-left: 40px;
+  align-content: center;
 }
 
 .info {
@@ -118,6 +135,7 @@ body {
   width: 100%;
   /* que ocupe todo el ancho de la hoja */
   box-sizing: border-box;
+  
 }
 
 .hoja h2 {
@@ -206,4 +224,20 @@ body {
   .btn {
     width: 220px;
   }
+}
+
+.btn-logout {
+  background-color: #ff5555;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: 0.2s;
+}
+
+.btn-logout:hover {
+  background-color: #e33;
 }

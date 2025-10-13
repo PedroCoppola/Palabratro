@@ -13,7 +13,7 @@ body {
   margin: 0;
   color: var(--texto);
   display: flex;
-  justify-content : center;
+  justify-content: center;
   align-items: center;
 }
 
@@ -35,7 +35,7 @@ body {
 /* Hoja con efecto */
 .hoja {
   border-radius: 5px;
-  width: 420px;
+  width: 600px;
   min-height: 520px;
   padding: 30px 25px;
   background: url("../img/hoja.jpg") no-repeat center center;
@@ -75,7 +75,8 @@ body {
 .hoja h2 {
   text-align: center;
   font-size: 24px;
-  margin: 40px 0 20px; /* espacio extra por el botón */
+  margin: 40px 0 20px;
+  /* espacio extra por el botón */
   color: var(--azul);
   text-decoration: underline;
 }
@@ -99,6 +100,104 @@ input[type="email"] {
   font-size: 16px;
   box-shadow: 3px 3px 0 #000;
   font-family: 'Gloria Hallelujah', cursive;
+}
+
+#registro-exitoso-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  width: 360px;
+  min-height: 2px;
+  background: url("../img/hoja.jpg") no-repeat center center;
+  background-size: cover;
+  border: 2px dashed var(--azul, #2a71d0);
+  border-radius: 20px;
+  box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #000;
+  font-family: 'Gloria Hallelujah', cursive;
+  z-index: 999;
+  opacity: 0;
+  display: none;
+  box-sizing: border-box;
+  text-align: center;
+
+  transition: opacity 0.4s ease, transform 0.3s ease;
+}
+
+#registro-exitoso-modal.show {
+  display: block;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+#registro-exitoso-modal h2 {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
+#registro-exitoso-modal p {
+  font-size: 18px;
+  margin: 10px 0 20px;
+}
+
+.btn-continuar {
+  display: block;
+  width: 270px;
+  margin: 12px auto;
+  padding: 14px 18px;
+  font-size: 18px;
+  font-weight: bolder;
+  border: 3px dashed var(--azul);
+  background: #fff;
+  cursor: pointer;
+  transform: rotate(-1deg);
+  box-shadow: 3px 3px 0 #000;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s;
+  border-radius: 12px;
+  color: var(--azul);
+  font-family: 'Gloria Hallelujah', cursive;
+  text-decoration: none;
+}
+
+
+.btn-continuar:hover {
+  transform: rotate(1deg) scale(1.04);
+  box-shadow: 6px 6px 0 #000;
+  background: #e8f4ff;
+}
+
+
+/* === Fondo oscuro detrás del modal === */
+#overlay-fondo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease;
+}
+
+/* Cuando se activa */
+#overlay-fondo.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Aseguramos que el modal esté arriba del overlay */
+#registro-exitoso-modal {
+  z-index: 999;
+}
+
+hr {
+  border: none;
+  border-top: 2px dashed var(--azul);
+  margin: 20px 0;
 }
 
 /* Botones */

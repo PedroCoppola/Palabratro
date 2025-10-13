@@ -35,7 +35,8 @@ if (isset($_SESSION['id'])) {
     <div class="tarjeta usuario">
         <img src="<?php echo htmlspecialchars($pfp_ruta); ?>" alt="Foto de perfil" class="user-pfp">
         <h2 id="usuario"><?php echo htmlspecialchars($usuario['username']); ?></h2>
-        <p>Puntaje: <span id="puntaje"><?php echo number_format($usuario['puntaje']); ?></span></p>
+        <p>Puntaje: <span id="puntaje"><?php echo number_format($usuario['puntaje']); ?></span> <a href="cuenta.php" class="btn-login">Ver perfil</a>
+</p>
     </div>
 
     <div class="info">
@@ -56,12 +57,25 @@ if (isset($_SESSION['id'])) {
 </p>
 
         <p><strong>Fecha de creación:</strong> <?php echo htmlspecialchars($usuario['fecha_creacion']); ?></p>
-    </div>
+    
+    <form action="logout.php" method="POST">
+  <button type="submit" class="btn carta btn-logout"> Cerrar sesión</button>
+</form>
 
+
+      </div>
+
+    </div>
+    
+  
 <?php
 } else {
-    echo '<p class="no-session">Che, iniciá sesión <a href="login.html">acá</a></p>';
-}
+
+   echo '<p style="text-align:center;">Inicia sesión para guardar tu progreso, puntajes y monedas.</p>';
+
+echo '<a href="login.html" class="btn-login">INICIAR SESIÓN</a>';
+
+ }
 ?>
 </div>
 
