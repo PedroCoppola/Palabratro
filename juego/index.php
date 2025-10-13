@@ -49,16 +49,11 @@ if (isset($_SESSION['id'])) {
     <!-- Incluimos la fuente del juego para que los estilos sean sutiles y armónicos -->
     <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
 
-
     <title>Palabratro</title>
     <!-- PLEASE NO CHANGES BELOW THIS LINE (UNTIL I SAY SO) -->
     <script language="javascript" type="text/javascript" src="libraries/p5.min.js"></script>
     <script language="javascript" type="text/javascript" src="palabratro.js"></script>
     <!-- OK, YOU CAN MAKE CHANGES BELOW THIS LINE AGAIN -->
-    <style>
-        /* CSS para el botón de ayuda y el modal (copiado de la respuesta anterior, simplificado) */
-
-    </style>
 </head>
 
 <body>
@@ -84,7 +79,6 @@ if (isset($_SESSION['id'])) {
         </span> partidas</strong>
     </p>
 </div>
-
         <?php else: ?>
             <!-- Mostrar botón de Login -->
             <h2>¡A Jugar!</h2>
