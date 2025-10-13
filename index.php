@@ -29,7 +29,7 @@ if (isset($_SESSION['id'])) {
     $usuario = $resultado->fetch_assoc();
 
     // Definir la ruta de la PFP con fallback
-    $pfp_ruta = !empty($usuario['pfp']) ? "img/pfp/" . $usuario['pfp'] : "img/pfp/default.png";
+    $pfp_ruta = !empty($usuario['pfp']) ? "img/pfp/" . $usuario['pfp'] : "img/  default.jpg";
     ?>
     
     <div class="tarjeta usuario">
