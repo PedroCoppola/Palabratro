@@ -1,13 +1,16 @@
 <?php
 include("../conexion.php");
 
-// Traer solo la columna "palabra"
-$sql = "SELECT palabra FROM palabras";
+// Traer id + palabra
+$sql = "SELECT id, palabra FROM palabras";
 $result = $conn->query($sql);
 
 $palabras = [];
 while ($row = $result->fetch_assoc()) {
-    $palabras[] = $row['palabra'];
+    $palabras[] = [
+        'id' => (int)$row['id'],
+        'palabra' => $row['palabra']
+    ];
 }
 
 header('Content-Type: application/json');

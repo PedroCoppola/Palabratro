@@ -226,3 +226,93 @@ body {
   from { transform: scale(0.7); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
+
+#btn-tienda {
+  position: fixed;
+  bottom: 80px;
+  left: 15px;
+  font-size: 24px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  box-shadow: 3px 3px 0 #000;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 1000;
+}
+#btn-tienda:hover {
+  transform: scale(1.1);
+}
+
+#tienda-modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: url("../img/hoja.jpg") no-repeat center center;
+  background-size: cover;
+  border: 2px dashed #0044aa;
+  padding: 25px;
+  width: 380px;
+  min-height: 300px;
+  border-radius: 10px;
+  box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  font-family: 'Gloria Hallelujah', cursive;
+  opacity: 0;
+  transition: opacity .3s, transform .3s;
+}
+#tienda-modal.show {
+  display: block;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+#tienda-modal .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  cursor: pointer;
+  font-size: 22px;
+  font-weight: bold;
+}
+.pista-item {
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px dashed #0044aa;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+  text-align: center;
+}
+.pista-item h4 {
+  margin: 0;
+}
+.btn-comprar {
+  border: none;
+  background: #007bff;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+.btn-comprar:hover {
+  background: #0056b3;
+}
+#contenedor-pistas-compradas {
+  margin-top: 15px;
+  background: #fefefe;
+  border: 1px dashed #aaa;
+  border-radius: 6px;
+  padding: 10px;
+}
+.pista-card {
+  border-bottom: 1px solid #ddd;
+  padding: 6px 0;
+}
+.pista-card:last-child {
+  border-bottom: none;
+}
