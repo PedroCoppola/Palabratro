@@ -1,16 +1,8 @@
 <?php
-// conexion.php
+$host = "mysql-lucas12.alwaysdata.net"; // Servidor
+$usuario = "lucas12";                    // Usuario de la BD
+$clave = "Pepe123";                // Contraseña de la BD
+$bd = "lucas12_palabrato";          // Nombre de la base (reemplazá esto)
 
-// Configura tus datos de conexión
-$host = "localhost";
-$db = "palabrato";
-$user = "root";
-$pass = ""; // o tu contraseña si la tienes
-
-$conn = new mysqli($host, $user, $pass, $db);
-
-// Verificar conexión
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
-}
-?>
+// Crear conexión
+$conn = new mysqli($host, $usuario, $clave, $bd);
