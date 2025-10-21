@@ -6,4 +6,3 @@ $bd = "lucas12_palabrato";          // Nombre de la base (reemplazá esto)
 
 // Crear conexión
 $conn = new mysqli($host, $usuario, $clave, $bd);
-c
