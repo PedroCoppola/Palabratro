@@ -20,16 +20,25 @@ function preload() {
     palabrasValidas = new Set(data.map(p => p.toUpperCase()));
   });
 }
-
 async function cargarPalabraSecreta() {
   try {
     const response = await fetch("get_palabras.php");
-    palabras = await response.json(); // array de strings
+    palabras = await response.json(); // array de objetos o strings
     console.log("Palabras cargadas:", palabras);
 
-    // elegir una palabra random
+    // Si el array son objetos tipo {id, palabra}
     const randomIndex = Math.floor(Math.random() * palabras.length);
-    palabraSecreta = palabras[randomIndex];
+    const palabraActual = palabras[randomIndex];
+
+    // Si palabraActual es un objeto {id, palabra}
+    window.ID_PALABRA_ACTUAL = palabraActual.id;
+    window.palabraSecreta = palabraActual.palabra;
+
+    // Si palabraActual es solo un string, usar esto:
+    // window.ID_PALABRA_ACTUAL = randomIndex;
+    // window.palabraSecreta = palabraActual;
+
+    palabraSecreta = window.palabraSecreta;
     console.log("Palabra secreta:", palabraSecreta);
   } catch (error) {
     console.error("Error cargando palabras:", error);
@@ -398,3 +407,144 @@ class Cuadrado {
     this.estado = estado;
   }
 }
+
+async function comprarPista(idPista) {
+  if (!ID_USUARIO_ACTUAL) {
+    alert("Tenés que iniciar sesión para usar las pistas.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("id_pista", idPista);
+
+  try {
+    const res = await fetch("comprar_pista.php", { method: "POST", body: formData });
+    const data = await res.json();
+
+    if (!data.ok) {
+      alert("⚠️ " + data.error);
+      return;
+    }
+
+    // Actualizar monedas visualmente
+    document.getElementById("monedas").innerText = data.nuevas_monedas;
+
+    // Ejecutar la acción específica
+    ejecutarPista(data.tipo_accion);
+
+  } catch (err) {
+    console.error("Error comprando pista:", err);
+  }
+}
+
+function ejecutarPista(tipo) {
+  switch (tipo) {
+    case "revelar_primera":
+      revelarLetra(0);
+      break;
+
+    case "revelar_ultima":
+      revelarLetra(palabraSecreta.length - 1);
+      break;
+
+    case "mostrar_longitud":
+      alert("📏 La palabra tiene " + palabraSecreta.length + " letras.");
+      break;
+
+    case "revelar_mitad":
+      const mitad = Math.floor(palabraSecreta.length / 2);
+      alert("🧩 Mitad revelada: " + palabraSecreta.slice(0, mitad));
+      break;
+
+    default:
+      console.warn("Tipo de pista no reconocido:", tipo);
+  }
+}
+
+// Ejemplo auxiliar
+function revelarLetra(pos) {
+  const letra = palabraSecreta[pos].toUpperCase();
+  alert(`🔤 La letra ${pos + 1} es "${letra}"`);
+}
+
+document.querySelectorAll('.btn-comprar').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const pistaItem = btn.closest('.pista-item');
+    const pistaId = pistaItem.dataset.id;
+    const precio = parseInt(pistaItem.dataset.precio, 10);
+    const nombre = pistaItem.querySelector('h4').innerText;
+
+    if (!confirm(`¿Comprar "${nombre}" por ${precio} monedas?`)) return;
+
+    // palabraSecreta: variable global en tu juego p5.js
+    // Asegurate de exponerla a scope global si está dentro de un archivo (ej: window.palabraSecreta = palabraSecreta;)
+    const palabraActual = typeof palabraSecreta !== 'undefined' ? palabraSecreta : null;
+
+    const body = new URLSearchParams();
+    body.append('pista_id', pistaId);
+    if (palabraActual) body.append('palabra', palabraActual);
+
+    try {
+      const res = await fetch('comprar_pista.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: body.toString()
+      });
+
+      const data = await res.json();
+
+      if (!data.ok) {
+        alert(`⚠️ ${data.error}`);
+        return;
+      }
+
+      // Actualizar monedas UI
+      const monedasEl = document.getElementById('monedas');
+      if (monedasEl) monedasEl.innerText = data.nuevas_monedas;
+
+      // Obtener el valor real devuelto por PHP
+      const valorRef = data.valor_referencia;
+
+      // Construir la card con valor real si está disponible, si no mostrar la columna
+      const cont = document.getElementById('contenedor-pistas-compradas');
+      const card = document.createElement('div');
+      card.classList.add('pista-card');
+
+      let detalleHTML = '';
+      if (valorRef !== null && valorRef !== '') {
+        // Mostrar el valor real. Si es 'palabra' o similar, estilizar
+        detalleHTML = `<p><strong>Resultado:</strong> ${escapeHtml(String(valorRef))}</p>`;
+      } else {
+        detalleHTML = `<p><i>Referencia:</i> ${escapeHtml(data.pista.columna)} (no disponible)</p>`;
+      }
+
+      card.innerHTML = `
+        <h4>${escapeHtml(data.pista.icono || '💡')} ${escapeHtml(data.pista.nombre)}</h4>
+        <p>${escapeHtml(data.pista.descripcion)}</p>
+        ${detalleHTML}
+      `;
+      cont.appendChild(card);
+
+      alert(`✅ ${data.msg}`);
+    } catch (err) {
+      console.error(err);
+      alert('❌ Error al conectar con el servidor.');
+    }
+  });
+});
+
+// pequeña función para escapar HTML (seguridad)
+function escapeHtml(s) {
+  return s
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+
+// cuando cargás la palabra
+window.ID_PALABRA_ACTUAL = palabraActual.id; // o como se llame tu propiedad
+window.palabraSecreta = palabraActual.palabra; // si querés seguir usando esto también
+

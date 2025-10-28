@@ -49,20 +49,17 @@ if (isset($_SESSION['id'])) {
     <!-- Incluimos la fuente del juego para que los estilos sean sutiles y armónicos -->
     <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
 
-
     <title>Palabratro</title>
     <!-- PLEASE NO CHANGES BELOW THIS LINE (UNTIL I SAY SO) -->
     <script language="javascript" type="text/javascript" src="libraries/p5.min.js"></script>
     <script language="javascript" type="text/javascript" src="palabratro.js"></script>
     <!-- OK, YOU CAN MAKE CHANGES BELOW THIS LINE AGAIN -->
-    <style>
-        /* CSS para el botón de ayuda y el modal (copiado de la respuesta anterior, simplificado) */
-
-    </style>
 </head>
 
 <body>
     <!-- TARJETA DE ESTADO DE SESIÓN (SUPERIOR IZQUIERDA) -->
+           <a href="index.php" class="btn-volver">⬅ Volver</a>
+
     <div class="tarjeta-sesion">
         <?php if ($usuario_logueado): ?>
             <!-- Mostrar datos del usuario -->
@@ -84,7 +81,6 @@ if (isset($_SESSION['id'])) {
         </span> partidas</strong>
     </p>
 </div>
-
         <?php else: ?>
             <!-- Mostrar botón de Login -->
             <h2>¡A Jugar!</h2>
@@ -119,26 +115,130 @@ if (isset($_SESSION['id'])) {
         </ul>
     </div>
 
+<div id="contenedor-pistas-compradas">
+  <h3>🎯 Pistas compradas esta ronda</h3>
+</div>
+
+
+
+    <button id="btn-tienda">🧩</button>
+
+<div id="tienda-modal">
+  <span class="close-btn">&times;</span>
+  <h3>🧩 Tienda de Pistas</h3>
+  <p>Usá tus monedas para conseguir ventajas.</p>
+
+  <div id="lista-pistas">
+    <!-- acá van las pistas desde PHP -->
+    <?php
+    require_once '../conexion.php';
+    $pistas = $conn->query("SELECT * FROM pistas WHERE activa = 1 ORDER BY valor_monedas ASC");
+    if ($pistas->num_rows > 0):
+      while ($p = $pistas->fetch_assoc()): ?>
+        <div class="pista-item" data-id="<?= $p['id'] ?>" data-columna="<?= $p['columna_referencia'] ?>" data-precio="<?= $p['valor_monedas'] ?>">
+          <h4><?= $p['icono_simbolo'] ?> <?= htmlspecialchars($p['nombre']) ?></h4>
+          <p><?= htmlspecialchars($p['descripcion_corta']) ?></p>
+          <button class="btn-comprar">Comprar por <?= $p['valor_monedas'] ?> 🪙</button>
+        </div>
+      <?php endwhile;
+    else: ?>
+      <p>No hay pistas disponibles por ahora 😕</p>
+    <?php endif; ?>
+  </div>
+</div>
+
+
     <script>
-        // Lógica del modal de ayuda (la misma que ya tenías)
-        const btnAyuda = document.getElementById('btn-ayuda');
-        const ayudaModal = document.getElementById('ayuda-modal');
-        const closeBtn = ayudaModal.querySelector('.close-btn');
+  // ===========================
+  // 📘 MODAL DE AYUDA
+  // ===========================
+  const btnAyuda = document.getElementById('btn-ayuda');
+  const ayudaModal = document.getElementById('ayuda-modal');
+  const closeBtn = ayudaModal.querySelector('.close-btn');
 
-        btnAyuda.addEventListener('click', () => {
-            ayudaModal.style.display = 'block';
+  btnAyuda.addEventListener('click', () => {
+    ayudaModal.style.display = 'block';
+  });
+
+  closeBtn.addEventListener('click', () => {
+    ayudaModal.style.display = 'none';
+  });
+
+  // ===========================
+  // 💰 MODAL DE TIENDA
+  // ===========================
+  const btnTienda = document.getElementById('btn-tienda');
+  const modalTienda = document.getElementById('tienda-modal');
+  const closeTienda = modalTienda.querySelector('.close-btn');
+
+  btnTienda.addEventListener('click', () => modalTienda.classList.add('show'));
+  closeTienda.addEventListener('click', () => modalTienda.classList.remove('show'));
+
+  // ===========================
+  // 🌎 VARIABLE GLOBAL DE USUARIO
+  // ===========================
+  const ID_USUARIO_ACTUAL = <?php echo $usuario_logueado ? (int)$id_usuario : 'null'; ?>;
+
+  // ===========================
+  // 🧩 COMPRA DE PISTAS
+  // ===========================
+  document.querySelectorAll('.btn-comprar').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const item = btn.closest('.pista-item');
+      const pistaId = item.dataset.id;
+      const precio = item.dataset.precio;
+      const nombre = item.querySelector('h4').innerText;
+
+      if (!window.ID_PALABRA_ACTUAL) {
+        alert("⚠️ No se encontró la palabra actual.");
+        return;
+      }
+
+      if (!confirm(`¿Comprar "${nombre}" por ${precio} monedas?`)) return;
+
+      const body = new URLSearchParams();
+      body.append("pista_id", pistaId);
+      body.append("id_palabra", window.ID_PALABRA_ACTUAL);
+
+      try {
+        const res = await fetch("comprar_pista.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: body.toString()
         });
 
-        closeBtn.addEventListener('click', () => {
-            ayudaModal.style.display = 'none';
-        });
-        
-        // *****************************************************************
-        // VARIABLE GLOBAL DE JS PARA SABER EL ID DEL USUARIO
-        // ESTO ES CLAVE PARA GUARDAR LA PARTIDA CON AJAX/FETCH
-        const ID_USUARIO_ACTUAL = <?php echo $usuario_logueado ? (int)$id_usuario : 'null'; ?>;
-        // *****************************************************************
-    </script>
+        const data = await res.json();
+
+        if (!data.ok) {
+          alert(`⚠️ ${data.error}`);
+          return;
+        }
+
+        // Actualizar monedas
+        const monedasEl = document.getElementById("monedas");
+        if (monedasEl) monedasEl.innerText = data.nuevas_monedas;
+
+        // Crear card visual de pista
+        const cont = document.getElementById("contenedor-pistas-compradas");
+        const card = document.createElement("div");
+        card.classList.add("pista-card");
+        card.innerHTML = `
+          <h4>${data.pista.icono || "💡"} ${data.pista.nombre}</h4>
+          <hr class="linea">
+          <p>${data.pista.descripcion}</p>
+          <p><strong>Resultado:</strong> ${data.valor_referencia ?? "(sin dato)"}</p>
+        `;
+        cont.appendChild(card);
+
+        alert(`✅ ${data.msg}`);
+      } catch (e) {
+        console.error(e);
+        alert("❌ Error al conectar con el servidor.");
+      }
+    });
+  });
+</script>
+
 </body>
 
 </html>
