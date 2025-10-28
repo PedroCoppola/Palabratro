@@ -11,23 +11,21 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.9);
-      width: 360px;
-      min-height: 410px;
-      padding: 26px;
+      width: 340px;
+      min-height: 300px;
+      padding: 25px;
       background: url("img/hoja.jpg") no-repeat center center;
       background-size: cover;
-      border: 2px dashed var(--azul, #2a71d0);
+      border: 2px dashed #2a71d0;
       border-radius: 5px;
-      box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.5),
-                  0 4px 8px rgba(0, 0, 0, 0.2);
-      color: #000;
+      box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
       font-family: 'Gloria Hallelujah', cursive;
-      z-index: 999;
-      box-sizing: border-box;
+      color: #000;
       text-align: center;
       display: none;
       opacity: 0;
-      transition: opacity 0.4s ease, transform 0.3s ease;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 1000;
     }
 
     #registro-exitoso-modal.show {
@@ -36,25 +34,15 @@
       transform: translate(-50%, -50%) scale(1);
     }
 
-    #registro-exitoso-modal h2 {
-      font-size: 26px;
-      margin-bottom: 10px;
-    }
-
-    #registro-exitoso-modal p {
-      font-size: 18px;
-      margin: 10px 0 20px;
-    }
-
     #btn-continuar {
+      margin-top: 15px;
       background-color: #2a71d0;
-      color: #fff;
+      color: white;
       border: none;
-      padding: 10px 20px;
-      font-size: 18px;
-      border-radius: 5px;
+      padding: 10px 18px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: background-color 0.2s;
+      font-size: 16px;
     }
 
     #btn-continuar:hover {
@@ -67,11 +55,10 @@
     <h1 class="titulo">Únete</h1>
 
     <div class="hoja">
-      <!-- Botón volver -->
       <a href="login.html" class="btn-volver">⬅ Volver</a>
-
       <h2>Crear una cuenta</h2>
-      <form id="formRegistro">
+
+      <form id="formRegistro" method="POST" action="registro.php">
         <label for="username">Nombre de usuario:</label>
         <input type="text" name="username" id="username" required>
 
@@ -86,45 +73,17 @@
     </div>
   </div>
 
-  <!-- Modal de éxito -->
   <div id="registro-exitoso-modal">
     <h2>🎉 ¡Registro Exitoso!</h2>
-    <p>Bienvenido a <strong>Palabratro</strong> 😎<br>
-    ¡Ya podés empezar a jugar!</p>
-    <button id="btn-continuar">Continuar</button>
+    <p>Bienvenido a <b>Palabrato</b> 😎<br>¡Ya podés empezar a jugar!</p>
+    <button id="btn-continuar" onclick="window.location.href='index.php'">Continuar</button>
   </div>
 
   <script>
-    const form = document.getElementById("formRegistro");
-    const modal = document.getElementById("registro-exitoso-modal");
-    const btnContinuar = document.getElementById("btn-continuar");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const formData = new FormData(form);
-
-      try {
-        const res = await fetch("registro.php", {
-          method: "POST",
-          body: formData
-        });
-        const data = await res.json();
-
-        if (data.ok) {
-          modal.classList.add("show"); // muestra la hoja modal
-        } else {
-          alert("⚠️ " + data.error);
-        }
-      } catch (err) {
-        console.error(err);
-        alert("❌ Error de conexión con el servidor.");
-      }
-    });
-
-    btnContinuar.addEventListener("click", () => {
-      window.location.href = "index.php";
-    });
+    // Mostrar modal si la URL tiene ?ok=1
+    if (window.location.search.includes("ok=1")) {
+      document.getElementById("registro-exitoso-modal").classList.add("show");
+    }
   </script>
 </body>
 </html>

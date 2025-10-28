@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (!empty($username) && !empty($contraseña)) {
         // Consulta preparada
-        $stmt = $conn->prepare("SELECT id, username, contraseña FROM usuarios WHERE username = ? LIMIT 1");
+        $stmt = $conn->prepare("SELECT id, username, contrasena FROM usuarios WHERE username = ? LIMIT 1");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $usuario = $result->fetch_assoc();
 
             // Verificar contraseña
-            if (password_verify($contraseña, $usuario['contraseña'])) {
+            if (password_verify($contraseña, $usuario['contrasena'])) {
                 $_SESSION['usuario'] = $usuario['username'];
                 $_SESSION['id'] = $usuario['id'];
 
