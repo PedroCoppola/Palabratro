@@ -101,6 +101,14 @@ function setup() {
   boton.style('font-family', "'Gloria Hallelujah', cursive");
   boton.mousePressed(probarPalabra);
 
+
+  // Optional: also handle global p5 key presses
+  window.keyPressed = function() {
+    if (keyCode === ENTER) {
+      probarPalabra();
+    }
+  };
+
   let btnRestart = select("#btn-restart");
   btnRestart.mousePressed(() => {
     location.reload(); // recarga la página y arranca de nuevo
