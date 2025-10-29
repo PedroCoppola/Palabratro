@@ -75,6 +75,8 @@ echo '<a href="login.html" class="btn-login">INICIAR SESIÓN</a>';
       <button class="btn carta btn-jugar" onclick="location.href='juego/index.php'">🎮 JUGAR</button>
       <button class="btn carta btn-ranking" onclick="location.href='ranking.php'">🏆 RANKING</button>
     </div>
+    <button class="btn carta btn-ranking" onclick="location.href='ranking.php'">🏆 RANKING</button>
+    </div>
   </div>
 
 </div>
