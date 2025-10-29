@@ -58,7 +58,7 @@ if (isset($_SESSION['id'])) {
 
 <body>
     <!-- TARJETA DE ESTADO DE SESIÓN (SUPERIOR IZQUIERDA) -->
-           <a href="index.php" class="btn-volver">⬅ Volver</a>
+           <a href="../index.php" class="btn-volver">⬅ Volver</a>
 
     <div class="tarjeta-sesion">
         <?php if ($usuario_logueado): ?>

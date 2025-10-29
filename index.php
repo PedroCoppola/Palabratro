@@ -10,6 +10,7 @@ require_once "conexion.php";
 <head>
   <meta charset="UTF-8">
   <title>Palabrato</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/stylo.css">
 </head>
 <body>
@@ -29,14 +30,17 @@ if (isset($_SESSION['id'])) {
     $usuario = $resultado->fetch_assoc();
 
     // Definir la ruta de la PFP con fallback
-    $pfp_ruta = !empty($usuario['pfp']) ? "img/pfp/" . $usuario['pfp'] : "img/pfp/default.png";
+    $pfp_ruta = !empty($usuario['pfp']) ? "img/pfp/" . $usuario['pfp'] : "img/default.jpg";
     ?>
     
     <div class="tarjeta usuario">
         <img src="<?php echo htmlspecialchars($pfp_ruta); ?>" alt="Foto de perfil" class="user-pfp">
         <h2 id="usuario"><?php echo htmlspecialchars($usuario['username']); ?></h2>
         <p>Puntaje: <span id="puntaje"><?php echo number_format($usuario['puntaje']); ?></span></p>
+            <a href="editarperfil.php" class="btn-login">Editar perfil</a>
+
     </div>
+
 
     <div class="info">
         <h2>Estadísticas</h2>
@@ -57,6 +61,13 @@ if (isset($_SESSION['id'])) {
 
         <p><strong>Fecha de creación:</strong> <?php echo htmlspecialchars($usuario['fecha_creacion']); ?></p>
     </div>
+    <a href="cuenta.php" class="btn-login">Ver perfil</a>
+    <form action="logout.php" method="POST">
+  <button type="submit" class="btn carta btn-logout"> Cerrar sesión</button>
+</form>
+        </div>
+    
+
 
 <?php
 } else {

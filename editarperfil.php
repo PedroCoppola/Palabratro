@@ -1,75 +1,70 @@
 <?php
 session_start();
-include("conexion.php");
+require_once "conexion.php";
 
+if (!isset($_SESSION['id'])) {
+    header("Location: login.html");
+    exit;
+}
+
+$id_usuario = $_SESSION['id'];
 $mensaje = "";
-$fotoPerfil = "";
 
-// Procesar formulario
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = trim($_POST["username"]);
-    $email = trim($_POST["email"]);
+// === Obtener datos del usuario logueado ===
+$sql = "SELECT username, email, contrasena, pfp FROM usuarios WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id_usuario);
+$stmt->execute();
+$result = $stmt->get_result();
+$usuario = $result->fetch_assoc();
+$stmt->close();
+
+$fotoPerfil = !empty($usuario['pfp']) ? "img/pfp/" . $usuario['pfp'] : "img/pfp/default.png";
+
+// === Procesar formulario ===
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $nuevo_email = trim($_POST["email"]);
     $pass_actual = $_POST["pass_actual"];
     $pass_nueva = $_POST["pass_nueva"];
     $pfp = $_FILES["pfp"];
 
-    // Buscar usuario
-    $sql = "SELECT * FROM usuarios WHERE username = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
-    $usuario = $resultado->fetch_assoc();
-
-    if ($usuario) {
-        // Verificar contraseña actual
-        if (password_verify($pass_actual, $usuario["contraseña"])) {
-            $update = "UPDATE usuarios SET email=?, contraseña=?, pfp=? WHERE username=?";
-            
-            // Si hay nueva contraseña, hasheamos, sino dejamos la misma
-            if (!empty($pass_nueva)) {
-                $nueva_pass = password_hash($pass_nueva, PASSWORD_DEFAULT);
-            } else {
-                $nueva_pass = $usuario["contraseña"];
-            }
-
-            // Manejo de imagen
-            $nombreArchivo = $usuario["pfp"]; // valor por defecto (la que ya tenía)
-            if (!empty($pfp["name"])) {
-                $carpetaDestino = "img/pfp/";
-                $nombreArchivo = time() . "_" . basename($pfp["name"]);
-                $rutaDestino = $carpetaDestino . $nombreArchivo;
-
-                if (move_uploaded_file($pfp["tmp_name"], $rutaDestino)) {
-                    $fotoPerfil = $rutaDestino;
-                } else {
-                    $mensaje = "⚠️ Error al subir la imagen.";
-                }
-            } else {
-                if (!empty($usuario["pfp"])) {
-                    $fotoPerfil = "img/pfp/" . $usuario["pfp"];
-                }
-            }
-
-            // Guardar cambios
-            $stmt2 = $conn->prepare($update);
-            $stmt2->bind_param("ssss", $email, $nueva_pass, $nombreArchivo, $username);
-
-            if ($stmt2->execute()) {
-                $mensaje = "✅ Perfil actualizado correctamente";
-            } else {
-                $mensaje = "❌ Error al actualizar el perfil";
-            }
-
-        } else {
-            $mensaje = "❌ La contraseña actual no es correcta.";
-        }
+    // Verificar contraseña actual
+    if (!password_verify($pass_actual, $usuario["contrasena"])) {
+        $mensaje = "❌ La contraseña actual no es correcta.";
     } else {
-        $mensaje = "❌ Usuario no encontrado.";
+        $nueva_pass = $usuario["contrasena"];
+        if (!empty($pass_nueva)) {
+            $nueva_pass = password_hash($pass_nueva, PASSWORD_DEFAULT);
+        }
+
+        // Manejo de imagen
+        $nombreArchivo = $usuario["pfp"]; // mantiene la actual si no se sube nueva
+        if (!empty($pfp["name"])) {
+            $carpetaDestino = "img/pfp/";
+            $nombreArchivo = time() . "_" . basename($pfp["name"]);
+            $rutaDestino = $carpetaDestino . $nombreArchivo;
+
+            if (!move_uploaded_file($pfp["tmp_name"], $rutaDestino)) {
+                $mensaje = "⚠️ Error al subir la imagen.";
+            }
+        }
+
+        // Actualizar datos
+        $update = "UPDATE usuarios SET email=?, contrasena=?, pfp=? WHERE id=?";
+        $stmt2 = $conn->prepare($update);
+        $stmt2->bind_param("sssi", $nuevo_email, $nueva_pass, $nombreArchivo, $id_usuario);
+
+        if ($stmt2->execute()) {
+            $mensaje = "✅ Perfil actualizado correctamente.";
+            // Refrescar los datos
+            $fotoPerfil = !empty($nombreArchivo) ? "img/pfp/" . $nombreArchivo : "img/pfp/default.png";
+        } else {
+            $mensaje = "❌ Error al actualizar el perfil.";
+        }
+        $stmt2->close();
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -117,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-top: 10px;
             display: block;
         }
-        input[type="text"], input[type="email"], input[type="password"], input[type="file"] {
+        input[type="email"], input[type="password"], input[type="file"] {
             width: 100%;
             padding: 8px;
             margin: 5px 0 15px;
@@ -136,34 +131,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         button:hover {
             background: #0056b3;
         }
+        .btn-volver {
+            display: inline-block;
+            text-align: center;
+            background: #555;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-volver:hover {
+            background: #333;
+        }
     </style>
 </head>
 <body>
     <div class="perfil-container">
         <h2>Editar Perfil</h2>
+
         <?php if ($mensaje): ?>
             <p class="mensaje"><?php echo $mensaje; ?></p>
         <?php endif; ?>
 
         <div class="foto-preview">
-            <?php if (!empty($fotoPerfil)): ?>
-                <img src="<?php echo $fotoPerfil; ?>" alt="Foto de perfil">
-            <?php else: ?>
-                <img src="img/pfp/default.png" alt="Foto por defecto">
-            <?php endif; ?>
+            <img src="<?php echo htmlspecialchars($fotoPerfil); ?>" alt="Foto de perfil">
         </div>
 
         <form method="POST" enctype="multipart/form-data">
-            <label>Nombre de usuario</label>
-            <input type="text" name="username" placeholder="Tu usuario" required>
+            <label>Usuario</label>
+            <input type="text" value="<?php echo htmlspecialchars($usuario['username']); ?>" disabled>
 
             <label>Email</label>
-            <input type="email" name="email" placeholder="ejemplo@email.com" required>
+            <input type="email" name="email" value="<?php echo htmlspecialchars($usuario['email']); ?>" required>
 
             <label>Foto de perfil</label>
             <input type="file" name="pfp">
 
-            <label>Contraseña actual (obligatoria)</label>
+            <label>Contraseña actual</label>
             <input type="password" name="pass_actual" required>
 
             <label>Nueva contraseña (opcional)</label>
@@ -171,6 +177,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <button type="submit">Guardar cambios</button>
         </form>
+
+        <a href="index.php" class="btn-volver">⬅ Volver</a>
     </div>
 </body>
 </html>
