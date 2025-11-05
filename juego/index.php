@@ -85,7 +85,7 @@ if (isset($_SESSION['id'])) {
             <!-- Mostrar botón de Login -->
             <h2>¡A Jugar!</h2>
             <p>Inicia sesión para guardar tu progreso, puntajes y monedas.</p>
-            <a href="../login.php" class="btn-login">Iniciar Sesión</a>
+            <a href="../login.html" class="btn-login">Iniciar Sesión</a>
         <?php endif; ?>
     </div>
     
