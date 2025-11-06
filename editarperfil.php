@@ -19,7 +19,7 @@ $result = $stmt->get_result();
 $usuario = $result->fetch_assoc();
 $stmt->close();
 
-$fotoPerfil = !empty($usuario['pfp']) ? "img/pfp/" . $usuario['pfp'] : "img/pfp/default.png";
+$fotoPerfil = !empty($usuario['pfp']) ? "img/pfp/" . $usuario['pfp'] : "img/default.png";
 
 // === Procesar formulario ===
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($stmt2->execute()) {
             $mensaje = "✅ Perfil actualizado correctamente.";
             // Refrescar los datos
-            $fotoPerfil = !empty($nombreArchivo) ? "img/pfp/" . $nombreArchivo : "img/pfp/default.png";
+            $fotoPerfil = !empty($nombreArchivo) ? "img/pfp/" . $nombreArchivo : "img/default.png";
         } else {
             $mensaje = "❌ Error al actualizar el perfil.";
         }

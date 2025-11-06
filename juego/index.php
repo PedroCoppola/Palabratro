@@ -102,26 +102,53 @@ if (isset($_SESSION['id'])) {
 
 
     <!-- Botón de ayuda y Modal -->
-    <button id="btn-ayuda">?</button>
     <div id="ayuda-modal">
         <span class="close-btn">&times;</span>
         <h3>¿Cómo se juega?</h3>
         <p>Debes adivinar una palabra de 5 letras en un máximo de 6 intentos.</p>
         <p>En cada intento, las letras de la palabra ingresada cambiarán de color para darte pistas:</p>
         <ul>
-            <li><span style="color: #4CAF50; font-weight: bold;">Verde</span> (Celeste en tu código p5) significa que la letra está en la palabra y en la posición correcta.</li>
+            <li><span style="color: #67d4bdff; font-weight: bold;">Celeste</span>significa que la letra está en la palabra y en la posición correcta.</li>
             <li><span style="color: #FFC107; font-weight: bold;">Amarillo</span> significa que la letra está en la palabra pero en la posición incorrecta.</li>
             <li><span style="color: #9E9E9E; font-weight: bold;">Gris</span> es que la letra no se encuentra en la palabra.</li>
         </ul>
     </div>
+
+        <button id="btn-ayuda">?</button>
+
 
 <div id="contenedor-pistas-compradas">
   <h3>🎯 Pistas compradas esta ronda</h3>
 </div>
 
 
+<div id="sugerir-palabra">
+  <h4>💡 ¿Querés sugerir una palabra nueva?</h4>
 
-    <button id="btn-tienda">🧩</button>
+  <form id="formSugerencia" action="sugerir_palabra.php" method="POST">
+    <input type="text" id="input-sugerencia" name="palabra" maxlength="5" placeholder="Tu palabra (5 letras)" required>
+    <button type="submit">Enviar</button>
+  </form>
+
+  <!-- Mensaje de resultado (opcional) -->
+  <?php if (isset($_GET['msg'])): ?>
+    <p class="msg-sugerencia">
+      <?php
+        switch ($_GET['msg']) {
+          case 'ok': echo '✅ ¡Gracias por tu sugerencia!'; break;
+          case 'ya_existe': echo '⚠️ Esa palabra ya está en el diccionario.'; break;
+          case 'sugerida': echo '⚠️ Esa palabra ya fue sugerida.'; break;
+          case 'error_formato': echo '⚠️ Debe tener 5 letras válidas.'; break;
+          default: echo '❌ Ocurrió un error inesperado.'; break;
+        }
+      ?>
+    </p>
+  <?php endif; ?>
+</div>
+
+
+
+<button id="btn-tienda">🧩</button>
 
 <div id="tienda-modal">
   <span class="close-btn">&times;</span>
@@ -149,6 +176,27 @@ if (isset($_SESSION['id'])) {
 
 
     <script>
+
+      const formSug = document.getElementById('formSugerencia');
+const inputSug = document.getElementById('input-sugerencia');
+
+formSug.addEventListener('submit', e => {
+  const palabra = inputSug.value.trim().toUpperCase();
+
+  if (palabra.length !== 5) {
+    e.preventDefault();
+    alert("⚠️ La palabra debe tener exactamente 5 letras.");
+    return;
+  }
+
+  if (!/^[A-ZÑÁÉÍÓÚÜ]+$/.test(palabra)) {
+    e.preventDefault();
+    alert("⚠️ Solo se permiten letras (sin espacios ni números).");
+    return;
+  }
+
+  inputSug.value = palabra; // convierte a mayúsculas antes de enviar
+});
   // ===========================
   // 📘 MODAL DE AYUDA
   // ===========================
@@ -237,6 +285,35 @@ if (isset($_SESSION['id'])) {
       }
     });
   });
+
+  const inputSug = document.getElementById('input-sugerencia');
+const btnSug = document.getElementById('btn-sugerir');
+
+btnSug.addEventListener('click', async () => {
+  const palabra = inputSug.value.trim();
+  if (palabra.length !== 5) {
+    alert("⚠️ La palabra debe tener exactamente 5 letras.");
+    return;
+  }
+
+  try {
+    const res = await fetch('sugerir_palabra.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: 'palabra=' + encodeURIComponent(palabra)
+    });
+
+    const data = await res.json();
+    if (data.ok) {
+      alert("✅ " + data.msg);
+      inputSug.value = '';
+    } else {
+      alert("⚠️ " + data.error);
+    }
+  } catch {
+    alert("❌ Error al conectar con el servidor.");
+  }
+});
 </script>
 
 </body>

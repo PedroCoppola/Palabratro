@@ -19,6 +19,9 @@ if (isset($_SESSION['id'])) {
         $usuario = $result->fetch_assoc();
     }
 
+        $pfp_ruta = !empty($usuario['pfp']) ? "img/pfp/" . $usuario['pfp'] : "img/default.jpg";
+
+
     $stmt->close();
 }
 
@@ -35,15 +38,12 @@ $conn->close();
 <body>
 
 <div class="tarjeta usuario">
-    <img src="<?php echo htmlspecialchars($usuario['pfp']); ?>" alt="Foto de perfil" class="pfp">
+        <img src="<?php echo htmlspecialchars($pfp_ruta); ?>" alt="Foto de perfil" class="pfp">
 
     <h2 id="usuario"><?php echo htmlspecialchars($usuario['username']); ?></h2>
 
     <div class="info-cajas">
-        <div class="caja ancho-completo">
-            <p><b>Email:</b></p>
-            <span><?php echo htmlspecialchars($usuario['email']); ?></span>
-        </div>
+ 
       <div class="caja">
     <p>
         <b>Monedas:</b>
