@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 require 'conexion.php';
 
 // Definir criterio de orden: puntaje por defecto
@@ -12,17 +14,17 @@ $orden_permitidos = [
 ];
 $orderBy = isset($orden_permitidos[$orden]) ? $orden_permitidos[$orden] : $orden_permitidos['puntaje'];
 
-// Consulta SQL
-$sql = "SELECT u.pfp, u.username, u.puntaje, u.mejor_racha, COUNT(p.id) AS partidas_jugadas
+// Consulta SQL (nos aseguramos de incluir u.id)
+$sql = "SELECT u.id, u.pfp, u.username, u.puntaje, u.mejor_racha, COUNT(p.id) AS partidas_jugadas
         FROM usuarios AS u
         LEFT JOIN partidas AS p ON u.id = p.id_usuario
-        GROUP BY u.id
+        GROUP BY u.id, u.pfp, u.username, u.puntaje, u.mejor_racha
         ORDER BY $orderBy";
 
 $resultado = mysqli_query($conn, $sql);
 
 if (!$resultado) {
-    die("Error en la consulta: " . mysqli_error($conn));
+    die("Error en la consulta SQL: " . mysqli_error($conn));
 }
 ?>
 <!DOCTYPE html>
@@ -64,14 +66,18 @@ if (!$resultado) {
                 $puesto = 1;
                 if (mysqli_num_rows($resultado) > 0) {
                     while($fila = mysqli_fetch_assoc($resultado)) {
-                        $pfp_ruta = $fila['pfp'] ? $fila['pfp'] : 'img/default.jpg';
+                        $pfp_ruta = !empty($fila['pfp']) ? $fila['pfp'] : 'img/default.jpg';
                 ?>
                         <tr>
                             <td class="ranking-puesto"><?php echo $puesto++; ?></td>
                             <td>
                                 <div class="user-info">
-                                    <img src="<?php echo htmlspecialchars($pfp_ruta); ?>" alt="Foto de perfil" class="user-pfp">
-                                    <span class="user-username"><?php echo htmlspecialchars($fila['username']); ?></span>
+                                    <a href="cuenta.php?id=<?php echo $fila['id']; ?>">
+                                        <img src="<?php echo htmlspecialchars($pfp_ruta); ?>" alt="Foto de perfil" class="user-pfp">
+                                    </a>
+                                    <a href="cuenta.php?id=<?php echo $fila['id']; ?>" class="user-username">
+                                        <?php echo htmlspecialchars($fila['username']); ?>
+                                    </a>
                                 </div>
                             </td>
                             <td class="ranking-puntaje"><?php echo number_format($fila['puntaje'], 0, ',', '.'); ?></td>
