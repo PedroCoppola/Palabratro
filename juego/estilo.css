@@ -412,13 +412,12 @@ body {
   border-radius: 6px;
 }
 
-#sugerir-palabra {
+#sugerir-box {
   position: fixed;
   text-align: center;
   background: rgba(255, 255, 255, 0.8);
   border: 2px dashed #2a71d0;
   padding: 15px;
-
   border-radius: 8px;
   width: 200px;
   bottom: 20px;
@@ -430,7 +429,7 @@ body {
   justify-content: center;
 }
 
-#sugerir-palabra input {
+#sugerir-input {
   padding: 8px;
   text-transform: uppercase;
   border: 2px dashed #2a71d0;
@@ -440,7 +439,7 @@ body {
   text-align: center;
 }
 
-#sugerir-palabra button {
+#btn-sugerir {
   padding: 8px 12px;
   color: #2a71d0;
   border-radius: 6px;
@@ -454,14 +453,13 @@ body {
   transition: 0.3s;
 }
 
-#sugerir-palabra button:hover {
+#btn-sugerir:hover {
   background-color: #1e57a3;
   color: white;
-    border: 2px dashed #b1b1b1;
-
+  border: 2px dashed #b1b1b1;
 }
 
-.msg-sugerencia {
+#msg-sugerencia {
   margin-top: 10px;
   font-weight: bold;
   color: #222;

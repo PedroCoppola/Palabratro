@@ -114,6 +114,16 @@ if (isset($_SESSION['id'])) {
         </ul>
     </div>
 
+    <div id="sugerir-box">
+  <h4>💡 Sugerir palabra</h4>
+
+  <input type="text" id="sugerir-input" maxlength="5" placeholder="5 letras">
+  <button id="btn-sugerir">Enviar</button>
+
+  <p id="msg-sugerencia" style="display:none;"></p>
+</div>
+
+
         <button id="btn-ayuda">?</button>
 
 
@@ -121,30 +131,6 @@ if (isset($_SESSION['id'])) {
   <h3>🎯 Pistas compradas esta ronda</h3>
 </div>
 
-
-<div id="sugerir-palabra">
-  <h4>💡 ¿Querés sugerir una palabra nueva?</h4>
-
-  <form id="formSugerencia" action="sugerir_palabra.php" method="POST">
-    <input type="text" id="input-sugerencia" name="palabra" maxlength="5" placeholder="Tu palabra (5 letras)" required>
-    <button type="submit">Enviar</button>
-  </form>
-
-  <!-- Mensaje de resultado (opcional) -->
-  <?php if (isset($_GET['msg'])): ?>
-    <p class="msg-sugerencia">
-      <?php
-        switch ($_GET['msg']) {
-          case 'ok': echo '✅ ¡Gracias por tu sugerencia!'; break;
-          case 'ya_existe': echo '⚠️ Esa palabra ya está en el diccionario.'; break;
-          case 'sugerida': echo '⚠️ Esa palabra ya fue sugerida.'; break;
-          case 'error_formato': echo '⚠️ Debe tener 5 letras válidas.'; break;
-          default: echo '❌ Ocurrió un error inesperado.'; break;
-        }
-      ?>
-    </p>
-  <?php endif; ?>
-</div>
 
 
 
@@ -176,72 +162,65 @@ if (isset($_SESSION['id'])) {
 
 
     <script>
-
-      const formSug = document.getElementById('formSugerencia');
-const inputSug = document.getElementById('input-sugerencia');
-
-formSug.addEventListener('submit', e => {
-  const palabra = inputSug.value.trim().toUpperCase();
-
-  if (palabra.length !== 5) {
-    e.preventDefault();
-    alert("⚠️ La palabra debe tener exactamente 5 letras.");
-    return;
+document.addEventListener('DOMContentLoaded', () => {
+  // Sugerencias (si existe el formulario/inputs)
+  const formSug = document.getElementById('formSugerencia');
+  const inputSug = document.getElementById('input-sugerencia');
+  if (formSug && inputSug) {
+    formSug.addEventListener('submit', e => {
+      const palabra = inputSug.value.trim().toUpperCase();
+      if (palabra.length !== 5) {
+        e.preventDefault();
+        alert("⚠️ La palabra debe tener exactamente 5 letras.");
+        return;
+      }
+      if (!/^[A-ZÑÁÉÍÓÚÜ]+$/.test(palabra)) {
+        e.preventDefault();
+        alert("⚠️ Solo se permiten letras (sin espacios ni números).");
+        return;
+      }
+      inputSug.value = palabra;
+    });
   }
 
-  if (!/^[A-ZÑÁÉÍÓÚÜ]+$/.test(palabra)) {
-    e.preventDefault();
-    alert("⚠️ Solo se permiten letras (sin espacios ni números).");
-    return;
-  }
-
-  inputSug.value = palabra; // convierte a mayúsculas antes de enviar
-});
-  // ===========================
-  // 📘 MODAL DE AYUDA
-  // ===========================
+  // Modal de ayuda
   const btnAyuda = document.getElementById('btn-ayuda');
   const ayudaModal = document.getElementById('ayuda-modal');
-  const closeBtn = ayudaModal.querySelector('.close-btn');
+  const ayudaClose = ayudaModal ? ayudaModal.querySelector('.close-btn') : null;
+  if (btnAyuda && ayudaModal && ayudaClose) {
+    btnAyuda.addEventListener('click', () => { ayudaModal.style.display = 'block'; });
+    ayudaClose.addEventListener('click', () => { ayudaModal.style.display = 'none'; });
+  }
 
-  btnAyuda.addEventListener('click', () => {
-    ayudaModal.style.display = 'block';
-  });
-
-  closeBtn.addEventListener('click', () => {
-    ayudaModal.style.display = 'none';
-  });
-
-  // ===========================
-  // 💰 MODAL DE TIENDA
-  // ===========================
+  // Modal de tienda
   const btnTienda = document.getElementById('btn-tienda');
   const modalTienda = document.getElementById('tienda-modal');
-  const closeTienda = modalTienda.querySelector('.close-btn');
+  const closeTienda = modalTienda ? modalTienda.querySelector('.close-btn') : null;
+  if (btnTienda && modalTienda && closeTienda) {
+    btnTienda.addEventListener('click', () => modalTienda.classList.add('show'));
+    closeTienda.addEventListener('click', () => modalTienda.classList.remove('show'));
+  }
 
-  btnTienda.addEventListener('click', () => modalTienda.classList.add('show'));
-  closeTienda.addEventListener('click', () => modalTienda.classList.remove('show'));
+  // Variable usuario desde PHP (queda en el scope global si ya la imprimiste)
+  const ID_USUARIO_ACTUAL = typeof ID_USUARIO_ACTUAL !== 'undefined' ? ID_USUARIO_ACTUAL : null;
 
-  // ===========================
-  // 🌎 VARIABLE GLOBAL DE USUARIO
-  // ===========================
-  const ID_USUARIO_ACTUAL = <?php echo $usuario_logueado ? (int)$id_usuario : 'null'; ?>;
-
-  // ===========================
-  // 🧩 COMPRA DE PISTAS
-  // ===========================
-  document.querySelectorAll('.btn-comprar').forEach(btn => {
-    btn.addEventListener('click', async () => {
+  // Compra de pistas: delegación sobre la lista
+  const listaPistas = document.getElementById('lista-pistas');
+  if (listaPistas) {
+    listaPistas.addEventListener('click', async (ev) => {
+      const btn = ev.target.closest('.btn-comprar');
+      if (!btn) return;
       const item = btn.closest('.pista-item');
+      if (!item) return;
+
       const pistaId = item.dataset.id;
       const precio = item.dataset.precio;
-      const nombre = item.querySelector('h4').innerText;
+      const nombre = item.querySelector('h4') ? item.querySelector('h4').innerText : 'pista';
 
       if (!window.ID_PALABRA_ACTUAL) {
         alert("⚠️ No se encontró la palabra actual.");
         return;
       }
-
       if (!confirm(`¿Comprar "${nombre}" por ${precio} monedas?`)) return;
 
       const body = new URLSearchParams();
@@ -254,65 +233,110 @@ formSug.addEventListener('submit', e => {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: body.toString()
         });
-
         const data = await res.json();
-
         if (!data.ok) {
           alert(`⚠️ ${data.error}`);
           return;
         }
-
-        // Actualizar monedas
+        // actualizar monedas en la UI
         const monedasEl = document.getElementById("monedas");
-        if (monedasEl) monedasEl.innerText = data.nuevas_monedas;
+        if (monedasEl && typeof data.nuevas_monedas !== 'undefined') monedasEl.innerText = data.nuevas_monedas;
 
-        // Crear card visual de pista
+        // añadir card visual
         const cont = document.getElementById("contenedor-pistas-compradas");
-        const card = document.createElement("div");
-        card.classList.add("pista-card");
-        card.innerHTML = `
-          <h4>${data.pista.icono || "💡"} ${data.pista.nombre}</h4>
-          <hr class="linea">
-          <p>${data.pista.descripcion}</p>
-          <p><strong>Resultado:</strong> ${data.valor_referencia ?? "(sin dato)"}</p>
-        `;
-        cont.appendChild(card);
-
+        if (cont) {
+          const card = document.createElement("div");
+          card.classList.add("pista-card");
+          card.innerHTML = `
+            <h4>${data.pista?.icono || "💡"} ${data.pista?.nombre || ''}</h4>
+            <hr class="linea">
+            <p>${data.pista?.descripcion || ''}</p>
+            <p><strong>Resultado:</strong> ${data.valor_referencia ?? "(sin dato)"}</p>
+          `;
+          cont.appendChild(card);
+        }
         alert(`✅ ${data.msg}`);
       } catch (e) {
         console.error(e);
         alert("❌ Error al conectar con el servidor.");
       }
     });
-  });
-
-  const inputSug = document.getElementById('input-sugerencia');
-const btnSug = document.getElementById('btn-sugerir');
-
-btnSug.addEventListener('click', async () => {
-  const palabra = inputSug.value.trim();
-  if (palabra.length !== 5) {
-    alert("⚠️ La palabra debe tener exactamente 5 letras.");
-    return;
   }
 
-  try {
-    const res = await fetch('sugerir_palabra.php', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: 'palabra=' + encodeURIComponent(palabra)
+  // Botón sugerir (si existe)
+  const btnSug = document.getElementById('btn-sugerir');
+  if (btnSug && inputSug) {
+    btnSug.addEventListener('click', async () => {
+      const palabra = inputSug.value.trim();
+      if (palabra.length !== 5) {
+        alert("⚠️ La palabra debe tener exactamente 5 letras.");
+        return;
+      }
+      try {
+        const res = await fetch('sugerir_palabra.php', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: 'palabra=' + encodeURIComponent(palabra)
+        });
+        const data = await res.json();
+        if (data.ok) {
+          alert("✅ " + data.msg);
+          inputSug.value = '';
+        } else {
+          alert("⚠️ " + data.error);
+        }
+      } catch {
+        alert("❌ Error al conectar con el servidor.");
+      }
     });
-
-    const data = await res.json();
-    if (data.ok) {
-      alert("✅ " + data.msg);
-      inputSug.value = '';
-    } else {
-      alert("⚠️ " + data.error);
-    }
-  } catch {
-    alert("❌ Error al conectar con el servidor.");
   }
+});
+
+
+const inputSug = document.getElementById("sugerir-input");
+const btnSug = document.getElementById("btn-sugerir");
+const msgSug = document.getElementById("msg-sugerencia");
+
+btnSug.addEventListener("click", async () => {
+
+    let palabra = inputSug.value.trim().toUpperCase();
+
+    // Validación front-end
+    if (palabra.length !== 5) {
+        msgSug.textContent = "Debe tener 5 letras.";
+        msgSug.style.color = "red";
+        msgSug.style.display = "block";
+        return;
+    }
+
+    if (!/^[A-ZÑÁÉÍÓÚÜ]+$/.test(palabra)) {
+        msgSug.textContent = "Solo letras permitidas.";
+        msgSug.style.color = "red";
+        msgSug.style.display = "block";
+        return;
+    }
+
+    // Enviar AJAX
+    try {
+        const res = await fetch("sugerir_palabra.php", {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: `palabra=${encodeURIComponent(palabra)}`
+        });
+
+        const data = await res.json();
+
+        msgSug.textContent = data.msg;
+        msgSug.style.color = data.ok ? "green" : "red";
+        msgSug.style.display = "block";
+
+        if (data.ok) inputSug.value = "";
+
+    } catch (e) {
+        msgSug.textContent = "Error de conexión.";
+        msgSug.style.color = "red";
+        msgSug.style.display = "block";
+    }
 });
 </script>
 
